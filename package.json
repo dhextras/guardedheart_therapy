@@ -1,5 +1,5 @@
 {
-  "name": "anonymous_therapy",
+  "name": "guardedheart_therapy",
   "description": "This aims to develop a web application that facilitates real-time communication between users seeking therapy or counseling (ANONYMOUSLY ) and available verified therapists.",
   "author": "Dhextras",
   "private": true,
@@ -16,9 +16,12 @@
     "@remix-run/node": "^2.9.2",
     "@remix-run/react": "^2.9.2",
     "@remix-run/serve": "^2.9.2",
+    "@supabase/supabase-js": "^2.43.4",
     "isbot": "^4.1.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-toastify": "^10.0.5",
+    "tailwindcss": "^3.4.4"
   },
   "devDependencies": {
     "@remix-run/dev": "^2.9.2",

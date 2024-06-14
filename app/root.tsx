@@ -1,3 +1,5 @@
+import Header from "~/components/Header";
+import { ToastContainer } from "react-toastify";
 import {
   Links,
   Meta,
@@ -5,7 +7,6 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import "./tailwind.css";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -17,7 +18,22 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
+        <Header />
+        <div
+          style={{
+            border: "2px solid black",
+            margin: "20px",
+            marginTop: "80px",
+            borderRadius: "20px",
+            display: "flex",
+            justifyContent: "center",
+            height: "70vh",
+            padding: "20px",
+          }}
+        >
+          {children}
+        </div>
+        <ToastContainer />
         <ScrollRestoration />
         <Scripts />
       </body>
