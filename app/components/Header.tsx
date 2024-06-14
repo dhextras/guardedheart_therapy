@@ -27,7 +27,7 @@ export default function Header() {
               cursor: "pointer",
             }}
           >
-            Therapy Login
+            Therapist Login
           </button>
         </Link>
       </div>
