@@ -1,5 +1,4 @@
-import { handleError } from "~/utils/notifications";
-import { supabase } from "./supabase.server";
+import { supabase } from "./supabase.auth";
 
 import type {
   User,
@@ -13,10 +12,9 @@ import type {
 export const createUser = async (): Promise<User | null> => {
   const { data, error } = await supabase.from("users").insert([{}]);
   if (error || !data) {
-    handleError(error, "Error connecting user: Try Again");
     return null;
   }
-  return data[0] as User;
+  return data as User;
 };
 
 export const createPendingUser = async (
@@ -28,10 +26,9 @@ export const createPendingUser = async (
     .from("pending_users")
     .insert([{ user_id: userId, name: name, initialMessage: initialMessage }]);
   if (error || !data) {
-    handleError(error, "Error adding to a pending user: Try Again");
     return null;
   }
-  return data[0] as PendingUser;
+  return data as PendingUser;
 };
 
 export const removePendingUser = async (userId: string): Promise<boolean> => {
@@ -40,7 +37,6 @@ export const removePendingUser = async (userId: string): Promise<boolean> => {
     .delete()
     .eq("user_id", userId);
   if (error) {
-    handleError(error, "Error removing from pending user: Try Again");
     return false;
   }
   return true;
@@ -56,10 +52,9 @@ export const getTherapistByCode = async (
     .eq("code", code)
     .single();
   if (error || !data) {
-    handleError(error, "Error getting therapist: Try Again");
     return null;
   }
-  return data[0] as Therapist;
+  return data as Therapist;
 };
 
 export const createOnlineTherapist = async (
@@ -69,10 +64,9 @@ export const createOnlineTherapist = async (
     .from("online_therapists")
     .insert([{ therapist_id: therapistId }]);
   if (error || !data) {
-    handleError(error, "Error updating your online status");
     return null;
   }
-  return data[0] as OnlineTherapist;
+  return data as OnlineTherapist;
 };
 
 export const deleteOnlineTherapist = async (
@@ -83,7 +77,6 @@ export const deleteOnlineTherapist = async (
     .delete()
     .eq("therapist_id", therapistId);
   if (error) {
-    handleError(error, "Error updating your online status");
     return false;
   }
   return true;
@@ -97,10 +90,9 @@ export const createActiveConversation = async (
     .from("active_conversation")
     .insert([{ id: conversationId }]);
   if (error || !data) {
-    handleError(error, "Error creating active conversation");
     return null;
   }
-  return data[0] as ActiveConversation;
+  return data as ActiveConversation;
 };
 
 export const deleteActiveConversation = async (
@@ -111,7 +103,6 @@ export const deleteActiveConversation = async (
     .delete()
     .eq("id", conversationId);
   if (error) {
-    handleError(error, "Error deleting active conversation");
     return false;
   }
   return true;

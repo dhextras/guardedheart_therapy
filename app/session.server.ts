@@ -1,0 +1,50 @@
+import { createCookieSessionStorage, redirect } from "@remix-run/node";
+
+const sessionSecret = process.env.SESSION_SECRET;
+if (!sessionSecret) {
+  throw new Error("SESSION_SECRET must be set");
+}
+
+const storage = createCookieSessionStorage({
+  cookie: {
+    name: "RJ_session",
+    secure: process.env.NODE_ENV === "production",
+    secrets: [sessionSecret],
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 30,
+    httpOnly: true,
+  },
+});
+
+export const { getSession, commitSession, destroySession } = storage;
+
+export async function requireTherapistSession(request: Request) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const therapist = session.get("therapist");
+
+  if (!therapist) {
+    throw redirect("/");
+  }
+
+  return therapist;
+}
+
+export async function saveTherapistToSession(therapist: any, request: Request) {
+  const session = await getSession(request.headers.get("Cookie"));
+  session.set("therapist", therapist);
+  return redirect("/dashboard", {
+    headers: {
+      "Set-Cookie": await commitSession(session),
+    },
+  });
+}
+
+export async function logout(request: Request) {
+  const session = await getSession(request.headers.get("Cookie"));
+  return redirect("/", {
+    headers: {
+      "Set-Cookie": await destroySession(session),
+    },
+  });
+}

@@ -4,8 +4,13 @@ export type User = {
 
 export type Therapist = {
   id: string;
+  name: string;
   code: string;
   total_conversations: number;
+};
+
+export type TherapistData = {
+  therapist: Therapist | null;
 };
 
 export type ActiveConversation = {
