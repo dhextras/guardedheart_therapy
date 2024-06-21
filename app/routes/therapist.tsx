@@ -1,12 +1,14 @@
-import { LoaderFunctionArgs, ActionFunctionArgs, json } from "@remix-run/node";
-import { useLoaderData, Form, Link, useActionData } from "@remix-run/react";
-import { getSession, saveTherapistToSession } from "~/session.server";
-import { handleError, showToast } from "~/utils/notifications";
 import { useEffect } from "react";
-import { TherapistErrorActionData } from "~/types/notification.types";
-import { getTherapistByCode } from "~/db/supabase.utils";
 import invariant from "tiny-invariant";
-import { TherapistData } from "~/types/db.types";
+import { useLoaderData, Form, Link, useActionData } from "@remix-run/react";
+import { LoaderFunctionArgs, ActionFunctionArgs, json } from "@remix-run/node";
+
+import { handleError } from "~/utils/notifications";
+import { getTherapistByCode } from "~/db/supabase.utils";
+import { getSession, saveTherapistToSession } from "~/session.server";
+
+import type { TherapistData } from "~/types/db.types";
+import type { TherapistErrorActionData } from "~/types/notification.types";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const session = await getSession(request.headers.get("Cookie"));

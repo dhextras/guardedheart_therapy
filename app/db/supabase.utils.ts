@@ -38,18 +38,18 @@ export const createPendingUser = async (
   return data[0] as PendingUser;
 };
 
-export const removePendingUser = async (userId: string): Promise<boolean> => {
+export const removePendingUser = async (id: string): Promise<boolean> => {
   const { error } = await supabase
     .from("pending_users")
     .delete()
-    .eq("user_id", userId);
+    .eq("id", id);
   if (error) {
     return false;
   }
   return true;
 };
 
-export const getPendingUserByUserId = async (
+export const getPendingUserById = async (
   id: string
 ): Promise<PendingUser | null> => {
   const { data, error } = await supabase
@@ -112,55 +112,57 @@ export const deleteOnlineTherapist = async (
   return true;
 };
 
-// Conversation related Db functions
-export const createActiveConversation = async (
-  conversationId: string
-): Promise<ActiveConversation | null> => {
-  const { data, error } = await supabase
-    .from("active_conversation")
-    .insert([{ id: conversationId }]);
-  if (error || !data) {
-    return null;
-  }
-  return data as ActiveConversation;
-};
+// Functions that are not yet been for any usages... will do later..
 
-export const deleteActiveConversation = async (
-  conversationId: string
-): Promise<boolean> => {
-  const { error } = await supabase
-    .from("active_conversation")
-    .delete()
-    .eq("id", conversationId);
-  if (error) {
-    return false;
-  }
-  return true;
-};
+// // Conversation related Db functions
+// export const createActiveConversation = async (
+//   conversationId: string
+// ): Promise<ActiveConversation | null> => {
+//   const { data, error } = await supabase
+//     .from("active_conversation")
+//     .insert([{ id: conversationId }]);
+//   if (error || !data) {
+//     return null;
+//   }
+//   return data as ActiveConversation;
+// };
 
-// TODO: Real time change listener Db functions
-export const listenToPendingUsers = (
-  callback: (pendingusers: PendingUser[] | null) => void
-) => {
-  const channel = supabase
-    .channel("pending_users")
-    .on(
-      "postgres_changes",
-      { event: "*", schema: "public", table: "pending_users" },
-      async (payload) => {
-        const { data, error } = await supabase
-          .from("pending_users")
-          .select("*");
-        if (error) {
-          callback(null);
-        } else {
-          callback(data as PendingUser[]);
-        }
-      }
-    )
-    .subscribe();
+// export const deleteActiveConversation = async (
+//   conversationId: string
+// ): Promise<boolean> => {
+//   const { error } = await supabase
+//     .from("active_conversation")
+//     .delete()
+//     .eq("id", conversationId);
+//   if (error) {
+//     return false;
+//   }
+//   return true;
+// };
 
-  return () => {
-    supabase.removeChannel(channel);
-  };
-};
+// // TODO: Real time change listener Db functions
+// export const listenToPendingUsers = (
+//   callback: (pendingusers: PendingUser[] | null) => void
+// ) => {
+//   const channel = supabase
+//     .channel("pending_users")
+//     .on(
+//       "postgres_changes",
+//       { event: "*", schema: "public", table: "pending_users" },
+//       async (payload) => {
+//         const { data, error } = await supabase
+//           .from("pending_users")
+//           .select("*");
+//         if (error) {
+//           callback(null);
+//         } else {
+//           callback(data as PendingUser[]);
+//         }
+//       }
+//     )
+//     .subscribe();
+
+//   return () => {
+//     supabase.removeChannel(channel);
+//   };
+// };

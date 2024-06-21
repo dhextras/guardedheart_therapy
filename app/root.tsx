@@ -1,4 +1,3 @@
-import Header from "~/components/Header";
 import { ToastContainer } from "react-toastify";
 import {
   Links,
@@ -7,6 +6,8 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
+
+import Header from "~/components/Header";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (

@@ -5,8 +5,8 @@ import { generateMeta } from "~/utils/generateMeta";
 import { getAllPendingUsers } from "~/db/supabase.utils";
 import { requireTherapistSession } from "~/session.server";
 
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import type { PendingUser } from "~/types/db.types";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 
 export const meta: MetaFunction = generateMeta("Dashboard");
 
@@ -29,7 +29,6 @@ export default function Index() {
 
   return (
     <>
-      <h1>Therapist dashboard</h1>
       {pendingUsers.length === 0 ? (
         <p>No pending users</p>
       ) : (

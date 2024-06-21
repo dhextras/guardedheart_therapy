@@ -1,5 +1,6 @@
-import { MetaFunction } from "@remix-run/node";
 import { useEffect } from "react";
+import { MetaFunction } from "@remix-run/node";
+
 import { generateMeta } from "~/utils/generateMeta";
 import { showToast } from "~/utils/notifications";
 
