@@ -3,7 +3,7 @@ import { createCookieSessionStorage, redirect } from "@remix-run/node";
 import {
   createOnlineTherapist,
   deleteOnlineTherapist,
-} from "./db/supabase.utils";
+} from "./db/utils";
 
 const sessionSecret = process.env.SESSION_SECRET;
 if (!sessionSecret) {

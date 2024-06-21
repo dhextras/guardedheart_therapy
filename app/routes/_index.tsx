@@ -7,7 +7,7 @@ import {
   getPredefinedText,
 } from "~/utils/userDetailsHelper";
 import { handleError } from "~/utils/notifications";
-import { createPendingUser } from "~/db/supabase.utils";
+import { createPendingUser } from "~/db/utils";
 import { preventUserAccessForTherapists } from "~/session.server";
 
 import type {

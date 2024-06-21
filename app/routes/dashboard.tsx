@@ -2,7 +2,7 @@ import { Link, useLoaderData } from "@remix-run/react";
 
 import { handleError } from "~/utils/notifications";
 import { generateMeta } from "~/utils/generateMeta";
-import { getAllPendingUsers } from "~/db/supabase.utils";
+import { getAllPendingUsers } from "~/db/utils";
 import { requireTherapistSession } from "~/session.server";
 
 import type { PendingUser } from "~/types/db.types";
@@ -37,7 +37,7 @@ export default function Index() {
             <li>
               {user.name} - {user.initial_message}
               <br></br>
-              <Link to={`/chat/${user.id}`}>
+              <Link to={`/therapistChat/${user.id}`}>
                 <button>Chat</button>
               </Link>
             </li>

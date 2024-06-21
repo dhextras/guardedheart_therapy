@@ -4,7 +4,7 @@ import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 
 import { generateMeta } from "~/utils/generateMeta";
 import { preventUserAccessForTherapists } from "~/session.server";
-import { getPendingUserById, removePendingUser } from "~/db/supabase.utils";
+import { getPendingUserById, removePendingUser } from "~/db/utils";
 
 import type { PendingUser } from "~/types/db.types";
 import type { MetaFunction, ActionFunctionArgs } from "@remix-run/node";

@@ -4,7 +4,7 @@ import { useLoaderData, Form, Link, useActionData } from "@remix-run/react";
 import { LoaderFunctionArgs, ActionFunctionArgs, json } from "@remix-run/node";
 
 import { handleError } from "~/utils/notifications";
-import { getTherapistByCode } from "~/db/supabase.utils";
+import { getTherapistByCode } from "~/db/utils";
 import { getSession, saveTherapistToSession } from "~/session.server";
 
 import type { TherapistData } from "~/types/db.types";

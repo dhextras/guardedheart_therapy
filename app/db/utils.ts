@@ -1,4 +1,4 @@
-import { supabase } from "./supabase.auth";
+import { supabase } from "./auth";
 
 import type {
   User,
