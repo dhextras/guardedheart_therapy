@@ -1,9 +1,9 @@
-import { LoaderFunctionArgs, json } from "@remix-run/node";
+import { LoaderFunctionArgs, ActionFunctionArgs, json } from "@remix-run/node";
 import { useLoaderData, Form, useActionData } from "@remix-run/react";
 import { getSession, saveTherapistToSession } from "~/session.server";
 import { handleError } from "~/utils/notifications";
 import { useEffect } from "react";
-import { ActionData } from "~/types/notification.types";
+import { TherapistErrorActionData } from "~/types/notification.types";
 import { getTherapistByCode } from "~/db/supabase.utils";
 import invariant from "tiny-invariant";
 import { TherapistData } from "~/types/db.types";
@@ -19,7 +19,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return json({});
 };
 
-export const action = async ({ request }: LoaderFunctionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const code = formData.get("code");
   invariant(typeof code === "string", "Code must be a string");
@@ -27,7 +27,7 @@ export const action = async ({ request }: LoaderFunctionArgs) => {
   try {
     const therapist = await getTherapistByCode(code);
     if (!therapist) {
-      return json({ error: "Invalid Therapist Code" }, { status: 400 });
+      return json({ error: "Invalid Therapist Code", details: `There is no therapist found with the code '${code}' in the db. please check again....`}, { status: 400 });
     }
     return saveTherapistToSession(therapist, request);
   } catch (error) {
@@ -40,7 +40,7 @@ export const action = async ({ request }: LoaderFunctionArgs) => {
 
 export default function TherapistLogin() {
   const data = useLoaderData<TherapistData>();
-  const actionData = useActionData<ActionData>();
+  const actionData = useActionData<TherapistErrorActionData>();
 
   useEffect(() => {
     if (actionData?.error && actionData?.details) {

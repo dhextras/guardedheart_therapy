@@ -21,6 +21,7 @@ export type ActiveConversation = {
 };
 
 export type PendingUser = {
+  id: string;
   user_id: string;
   name: string | null;
   initial_message: string | null;

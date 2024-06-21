@@ -10,25 +10,32 @@ import type {
 
 // User related Db functions
 export const createUser = async (): Promise<User | null> => {
-  const { data, error } = await supabase.from("users").insert([{}]);
+  const { data, error } = await supabase.from("users").insert([{}]).select();
   if (error || !data) {
     return null;
   }
-  return data as User;
+  return data[0] as User;
 };
 
 export const createPendingUser = async (
-  userId: string,
   name: string,
   initialMessage: string
 ): Promise<PendingUser | null> => {
+  const userId = await createUser();
+  if (!userId || userId.id === null) {
+    return null;
+  }
+
   const { data, error } = await supabase
     .from("pending_users")
-    .insert([{ user_id: userId, name: name, initialMessage: initialMessage }]);
+    .insert([
+      { user_id: userId.id, name: name, initial_message: initialMessage },
+    ])
+    .select();
   if (error || !data) {
     return null;
   }
-  return data as PendingUser;
+  return data[0] as PendingUser;
 };
 
 export const removePendingUser = async (userId: string): Promise<boolean> => {
@@ -40,6 +47,20 @@ export const removePendingUser = async (userId: string): Promise<boolean> => {
     return false;
   }
   return true;
+};
+
+export const getPendingUserByUserId = async (
+  id: string
+): Promise<PendingUser | null> => {
+  const { data, error } = await supabase
+    .from("pending_users")
+    .select("*")
+    .eq("id", id)
+    .single();
+  if (error || !data) {
+    return null;
+  }
+  return data as PendingUser;
 };
 
 // Therapist related Db functions

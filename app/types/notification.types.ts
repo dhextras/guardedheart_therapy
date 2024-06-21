@@ -1,6 +1,6 @@
 export type ToastLevels = "info" | "success" | "warning" | "error" | "default";
 
-export interface ActionData {
+export interface TherapistErrorActionData {
   error?: string;
   details?: string;
 }
