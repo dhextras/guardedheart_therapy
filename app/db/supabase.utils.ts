@@ -63,6 +63,14 @@ export const getPendingUserByUserId = async (
   return data as PendingUser;
 };
 
+export const getAllPendingUsers = async (): Promise<PendingUser[] | null> => {
+  const { data, error } = await supabase.from("pending_users").select("*");
+  if (error || !data) {
+    return null;
+  }
+  return data as PendingUser[];
+};
+
 // Therapist related Db functions
 export const getTherapistByCode = async (
   code: string
@@ -83,18 +91,19 @@ export const createOnlineTherapist = async (
 ): Promise<OnlineTherapist | null> => {
   const { data, error } = await supabase
     .from("online_therapists")
-    .insert([{ therapist_id: therapistId }]);
+    .insert([{ therapist_id: therapistId }])
+    .select();
   if (error || !data) {
     return null;
   }
-  return data as OnlineTherapist;
+  return data[0] as OnlineTherapist;
 };
 
 export const deleteOnlineTherapist = async (
   therapistId: string
 ): Promise<boolean> => {
   const { error } = await supabase
-    .from("online_therapist")
+    .from("online_therapists")
     .delete()
     .eq("therapist_id", therapistId);
   if (error) {
@@ -130,3 +139,28 @@ export const deleteActiveConversation = async (
 };
 
 // TODO: Real time change listener Db functions
+export const listenToPendingUsers = (
+  callback: (pendingusers: PendingUser[] | null) => void
+) => {
+  const channel = supabase
+    .channel("pending_users")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "pending_users" },
+      async (payload) => {
+        const { data, error } = await supabase
+          .from("pending_users")
+          .select("*");
+        if (error) {
+          callback(null);
+        } else {
+          callback(data as PendingUser[]);
+        }
+      }
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+};

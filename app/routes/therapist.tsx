@@ -1,7 +1,7 @@
 import { LoaderFunctionArgs, ActionFunctionArgs, json } from "@remix-run/node";
-import { useLoaderData, Form, useActionData } from "@remix-run/react";
+import { useLoaderData, Form, Link, useActionData } from "@remix-run/react";
 import { getSession, saveTherapistToSession } from "~/session.server";
-import { handleError } from "~/utils/notifications";
+import { handleError, showToast } from "~/utils/notifications";
 import { useEffect } from "react";
 import { TherapistErrorActionData } from "~/types/notification.types";
 import { getTherapistByCode } from "~/db/supabase.utils";
@@ -27,7 +27,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   try {
     const therapist = await getTherapistByCode(code);
     if (!therapist) {
-      return json({ error: "Invalid Therapist Code", details: `There is no therapist found with the code '${code}' in the db. please check again....`}, { status: 400 });
+      return json(
+        {
+          error: "Invalid Therapist Code",
+          details: `There is no therapist found with the code '${code}' in the db. please check again....`,
+        },
+        { status: 400 }
+      );
     }
     return saveTherapistToSession(therapist, request);
   } catch (error) {
@@ -56,6 +62,9 @@ export default function TherapistLogin() {
         <Form action="/logout" method="post">
           <button type="submit">Logout</button>
         </Form>
+        <Link to="/dashboard">
+          <button>Dashboard</button>
+        </Link>
       </div>
     );
   }

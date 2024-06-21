@@ -1,4 +1,8 @@
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
+import {
+  createOnlineTherapist,
+  deleteOnlineTherapist,
+} from "./db/supabase.utils";
 
 const sessionSecret = process.env.SESSION_SECRET;
 if (!sessionSecret) {
@@ -33,6 +37,8 @@ export async function requireTherapistSession(request: Request) {
 export async function saveTherapistToSession(therapist: any, request: Request) {
   const session = await getSession(request.headers.get("Cookie"));
   session.set("therapist", therapist);
+  await createOnlineTherapist(therapist.id);
+
   return redirect("/dashboard", {
     headers: {
       "Set-Cookie": await commitSession(session),
@@ -42,6 +48,9 @@ export async function saveTherapistToSession(therapist: any, request: Request) {
 
 export async function logout(request: Request) {
   const session = await getSession(request.headers.get("Cookie"));
+  const therapist = session.get("therapist");
+  await deleteOnlineTherapist(therapist.id);
+  
   return redirect("/", {
     headers: {
       "Set-Cookie": await destroySession(session),
