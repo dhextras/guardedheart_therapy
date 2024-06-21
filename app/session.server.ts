@@ -34,6 +34,17 @@ export async function requireTherapistSession(request: Request) {
   return therapist;
 }
 
+export async function preventUserAccessForTherapists(request: Request) {
+  const session = await getSession(request.headers.get("Cookie"));
+  const therapist = session.get("therapist");
+
+  if (therapist) {
+    throw redirect("/dashboard");
+  }
+
+  return null;
+}
+
 export async function saveTherapistToSession(therapist: any, request: Request) {
   const session = await getSession(request.headers.get("Cookie"));
   session.set("therapist", therapist);
@@ -50,7 +61,7 @@ export async function logout(request: Request) {
   const session = await getSession(request.headers.get("Cookie"));
   const therapist = session.get("therapist");
   await deleteOnlineTherapist(therapist.id);
-  
+
   return redirect("/", {
     headers: {
       "Set-Cookie": await destroySession(session),

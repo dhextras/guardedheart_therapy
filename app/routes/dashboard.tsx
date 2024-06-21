@@ -1,13 +1,17 @@
-import type { MetaFunction } from "@remix-run/node";
+import { Link, useLoaderData } from "@remix-run/react";
+
+import { handleError } from "~/utils/notifications";
 import { generateMeta } from "~/utils/generateMeta";
 import { getAllPendingUsers } from "~/db/supabase.utils";
-import { handleError } from "~/utils/notifications";
-import { Link, useLoaderData } from "@remix-run/react";
+import { requireTherapistSession } from "~/session.server";
+
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import type { PendingUser } from "~/types/db.types";
 
 export const meta: MetaFunction = generateMeta("Dashboard");
 
-export const loader = async () => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  await requireTherapistSession(request);
   const pendingUsers = await getAllPendingUsers();
   return pendingUsers;
 };

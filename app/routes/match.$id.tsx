@@ -5,11 +5,13 @@ import invariant from "tiny-invariant";
 import { useLoaderData } from "@remix-run/react";
 import { getPendingUserByUserId } from "~/db/supabase.utils";
 import { PendingUser } from "~/types/db.types";
+import { preventUserAccessForTherapists } from "~/session.server";
 
 export const meta: MetaFunction = generateMeta("Match");
 
-export const loader = async ({ params }: LoaderFunctionArgs) => {
+export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   invariant(params.id, "id must be provided");
+  await preventUserAccessForTherapists(request);
   const user = await getPendingUserByUserId(params.id);
   if (user === null) {
     return redirect("/");

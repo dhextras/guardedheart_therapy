@@ -1,17 +1,28 @@
+import { useEffect } from "react";
 import { Form, json, redirect, useActionData } from "@remix-run/react";
+
 import { generateMeta } from "~/utils/generateMeta";
 import {
   generateRandomName,
   getPredefinedText,
 } from "~/utils/userDetailsHelper";
-import { createPendingUser } from "~/db/supabase.utils";
-
-import type { MetaFunction, ActionFunctionArgs } from "@remix-run/node";
 import { handleError } from "~/utils/notifications";
-import { useEffect } from "react";
-import { PendingUser } from "~/types/db.types";
+import { createPendingUser } from "~/db/supabase.utils";
+import { preventUserAccessForTherapists } from "~/session.server";
+
+import type {
+  MetaFunction,
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+} from "@remix-run/node";
+import type { PendingUser } from "~/types/db.types";
 
 export const meta: MetaFunction = generateMeta("Home");
+
+export const loader = async ({ request }: LoaderFunctionArgs) => {
+  await preventUserAccessForTherapists(request);
+  return null;
+};
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
