@@ -66,6 +66,7 @@ CREATE TABLE active_conversations (
 
 -- Create the pending_users table
 CREATE TABLE pending_users (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID NOT NULL REFERENCES users(id),
   name TEXT,
   initial_message TEXT
@@ -117,6 +118,7 @@ This table stores information about ongoing conversations between users and ther
 
 This table stores information about users waiting to be matched with a therapist. It has:
 
+- `id`: A unique identifier for each pending users.
 - `user_id`: The user waiting for a therapist.
 - `name`: An optional name provided by the user.
 - `initial_message`: An optional initial message provided by the user.
