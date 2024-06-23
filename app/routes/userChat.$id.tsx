@@ -8,7 +8,11 @@ import { getPendingUserById, removePendingUser } from "~/db/utils";
 
 import type { PendingUser } from "~/types/db.types";
 import type { MetaFunction, ActionFunctionArgs } from "@remix-run/node";
-import { initializeSocket, listenForMessages, sendMessageToChat } from "~/utils/socket";
+import {
+  initializeSocket,
+  listenForMessages,
+  sendMessageToChat,
+} from "~/utils/socket";
 import { useEffect } from "react";
 
 export const meta: MetaFunction = generateMeta("Chat");
@@ -32,13 +36,26 @@ export const action = async ({ params }: ActionFunctionArgs) => {
 };
 
 export default function Index() {
+  let socket: boolean | undefined | null;
+  let isConnected: boolean = false;
   const user = useLoaderData<PendingUser>();
 
   useEffect(() => {
-    initializeSocket(user.id);
+    if (!socket) {
+      socket = initializeSocket(user.id);
+    }
 
     listenForMessages((message) => {
-      console.log(message);
+      if (
+        !isConnected &&
+        message?.name === "CONNECTION" &&
+        message?.message === "INITIALIZE_CHAT"
+      ) {
+        console.log("Connected with therapist");
+        isConnected = true;
+      } else {
+        console.log(message);
+      }
     });
   }, [user.id]);
 

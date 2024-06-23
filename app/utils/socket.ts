@@ -10,6 +10,7 @@ export const initializeSocket = (chatId: string) => {
     socket = io();
   }
   socket.emit("joinChat", chatId);
+  return true;
 };
 
 export const disconnectSocket = (chatId: string) => {

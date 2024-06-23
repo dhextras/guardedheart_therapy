@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import invariant from "tiny-invariant";
+import { Form } from "@remix-run/react";
 import { LoaderFunctionArgs, MetaFunction, redirect } from "@remix-run/node";
 
 import { getPendingUserById } from "~/db/utils";
@@ -24,23 +25,39 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 };
 
 export default function ChatRoute() {
+  let socket: boolean | undefined | null;
   const user = useLoaderData<PendingUser>();
+  const [inputMessage, setInputMessage] = useState("");
 
   useEffect(() => {
     showToast("Not yet implemented....");
-    initializeSocket(user.id);
+    if (!socket) {
+      socket = initializeSocket(user.id);
+      sendMessageToChat(user.id, {
+        name: "CONNECTION",
+        message: "INITIALIZE_CHAT",
+      });
+    }
+  }, [user.id]);
 
+  const handleSendMessage = () => {
     const sendmessage = sendMessageToChat(user.id, {
       name: "Therapist",
-      message: "Hello there, how are you today?",
+      message: inputMessage,
     });
-
     console.log(sendmessage);
-  }, [user.id]);
+  };
 
   return (
     <div>
       <h1>Chat Page</h1>
+      <input
+        type="text"
+        value={inputMessage}
+        onChange={(e) => setInputMessage(e.target.value)}
+        placeholder="Type your message..."
+      />
+      <button onClick={handleSendMessage}>Send</button>
     </div>
   );
 }
