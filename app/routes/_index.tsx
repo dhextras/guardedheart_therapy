@@ -38,7 +38,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   const pendingUser = await createPendingUser(userName, userMessage);
   if (pendingUser) {
-    return redirect(`/match/${pendingUser.id}`);
+    return redirect(`/userChat/${pendingUser.id}`);
   }
 
   return json({ pendingUser });

@@ -1,11 +1,15 @@
-import { useEffect } from "react";
 import invariant from "tiny-invariant";
-import { LoaderFunctionArgs, MetaFunction, redirect } from "@remix-run/node";
+import { useLoaderData, Form } from "@remix-run/react";
+import { LoaderFunctionArgs, redirect } from "@remix-run/node";
 
-import { getPendingUserById } from "~/db/utils";
-import { showToast } from "~/utils/notifications";
 import { generateMeta } from "~/utils/generateMeta";
 import { preventUserAccessForTherapists } from "~/session.server";
+import { getPendingUserById, removePendingUser } from "~/db/utils";
+
+import type { PendingUser } from "~/types/db.types";
+import type { MetaFunction, ActionFunctionArgs } from "@remix-run/node";
+import { initializeSocket, listenForMessages, sendMessageToChat } from "~/utils/socket";
+import { useEffect } from "react";
 
 export const meta: MetaFunction = generateMeta("Chat");
 
@@ -21,14 +25,33 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   return user;
 };
 
-export default function ChatRoute() {
+export const action = async ({ params }: ActionFunctionArgs) => {
+  invariant(params.id, "id must be provided");
+  await removePendingUser(params.id);
+  return redirect("/");
+};
+
+export default function Index() {
+  const user = useLoaderData<PendingUser>();
+
   useEffect(() => {
-    showToast("Not yet implemented....");
-  }, []);
+    initializeSocket(user.id);
+
+    listenForMessages((message) => {
+      console.log(message);
+    });
+  }, [user.id]);
 
   return (
-    <div>
-      <h1>Chat Page</h1>
+    <div
+      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+    >
+      <h1>Welcome {user.name}</h1>
+      <p>Your initial message: {user.initial_message}</p>
+      <p>Please wait for a therapist to pick you up...</p>
+      <Form method="post">
+        <button type="submit">Leave</button>
+      </Form>
     </div>
   );
 }

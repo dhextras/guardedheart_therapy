@@ -27,12 +27,6 @@ const build = viteDevServer
   ? () => viteDevServer.ssrLoadModule("virtual:remix/server-build")
   : await import("./build/server/index.js");
 
-app.all("*", createRequestHandler({ build }));
-
-app.listen(3000, () => {
-  console.log("App listening on http://localhost:3000");
-});
-
 io.on("connection", (socket) => {
   socket.on("joinChat", (chatId) => {
     socket.join(chatId);
@@ -45,4 +39,10 @@ io.on("connection", (socket) => {
   socket.on("sendMessageToChat", ({ chatId, message }) => {
     io.to(chatId).emit("broadcastMessageToChat", { message });
   });
+});
+
+app.all("*", createRequestHandler({ build }));
+
+server.listen(3000, () => {
+  console.log("App listening on http://localhost:3000");
 });
