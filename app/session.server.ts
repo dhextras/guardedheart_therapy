@@ -5,6 +5,8 @@ import {
   deleteOnlineTherapist,
 } from "./db/utils";
 
+import { Therapist } from "./types/db.types";
+
 const sessionSecret = process.env.SESSION_SECRET;
 if (!sessionSecret) {
   throw new Error("SESSION_SECRET must be set");
@@ -32,7 +34,7 @@ export async function requireTherapistSession(request: Request) {
     throw redirect("/");
   }
 
-  return therapist;
+  return therapist as Therapist;
 }
 
 export async function preventUserAccessForTherapists(request: Request) {
@@ -46,7 +48,7 @@ export async function preventUserAccessForTherapists(request: Request) {
   return null;
 }
 
-export async function saveTherapistToSession(therapist: any, request: Request) {
+export async function saveTherapistToSession(therapist: Therapist, request: Request) {
   const session = await getSession(request.headers.get("Cookie"));
   session.set("therapist", therapist);
   await createOnlineTherapist(therapist.id);

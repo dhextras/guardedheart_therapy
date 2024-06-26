@@ -1,15 +1,29 @@
-import { useEffect, useState } from "react";
+// TODO: Gotta clean up the active conversation later. add handler for leave operation connection and leave_chat something like that.
+
 import invariant from "tiny-invariant";
-import { Form } from "@remix-run/react";
-import { LoaderFunctionArgs, MetaFunction, redirect } from "@remix-run/node";
+import { useState, useEffect } from "react";
+import { useLoaderData, Form } from "@remix-run/react";
+import {
+  LoaderFunctionArgs,
+  MetaFunction,
+  redirect,
+  json,
+} from "@remix-run/node";
 
 import { getPendingUserById } from "~/db/utils";
 import { showToast } from "~/utils/notifications";
 import { generateMeta } from "~/utils/generateMeta";
 import { requireTherapistSession } from "~/session.server";
-import { initializeSocket, sendMessageToChat } from "~/utils/socket";
-import { useLoaderData } from "@remix-run/react";
-import { PendingUser } from "~/types/db.types";
+import {
+  initializeSocket,
+  sendMessageToChat,
+  listenForMessages,
+  disconnectSocket,
+} from "~/utils/socket";
+
+import type { PendingUser, Therapist } from "~/types/db.types";
+import { messageType } from "~/types/socket.types";
+import ChatInterface from "~/components/ChatInterface";
 
 export const meta: MetaFunction = generateMeta("Chat");
 
@@ -21,43 +35,92 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   if (user === null) {
     return redirect("/");
   }
-  return user;
+
+  // Make sure to create active conversations here maybe
+  return json({ user, therapist });
 };
 
-export default function ChatRoute() {
-  let socket: boolean | undefined | null;
-  const user = useLoaderData<PendingUser>();
+export const action = async ({ params }: LoaderFunctionArgs) => {
+  invariant(params.id, "id must be provided");
+  disconnectSocket(params.id);
+  return redirect("/");
+};
+
+export default function TherapistChatPage() {
+  let socketInitialized: boolean = false;
+  const { user, therapist } = useLoaderData<{
+    user: PendingUser;
+    therapist: Therapist;
+  }>();
+  const [messages, setMessages] = useState<Array<messageType>>([]);
   const [inputMessage, setInputMessage] = useState("");
+  const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    showToast("Not yet implemented....");
-    if (!socket) {
-      socket = initializeSocket(user.id);
-      sendMessageToChat(user.id, {
+    if (socketInitialized) {
+      listenForMessages((message) => {
+        if (
+          message &&
+          message?.name !== "CONNECTION" &&
+          message?.message !== "INITIALIZE_CHAT"
+        ) {
+          setMessages((prev) => [
+            ...prev,
+            { name: message.name, message: message.message },
+          ]);
+        }
+      });
+
+      setIsConnected(true);
+    } else {
+      socketInitialized = initializeSocket(user.id);
+      const connectionIntilaized = sendMessageToChat(user.id, {
         name: "CONNECTION",
         message: "INITIALIZE_CHAT",
       });
+
+      if (connectionIntilaized) {
+        showToast("Successfully Conected");
+      } else {
+        showToast("Failed to connect to chat", "error");
+      }
     }
-  }, [user.id]);
+  }, [user.id, socketInitialized]);
 
   const handleSendMessage = () => {
-    const sendmessage = sendMessageToChat(user.id, {
-      name: "Therapist",
-      message: inputMessage,
-    });
-    console.log(sendmessage);
+    if (inputMessage.trim()) {
+      const success = sendMessageToChat(user.id, {
+        name: therapist.name,
+        message: inputMessage,
+      });
+
+      if (success) {
+        setInputMessage("");
+      } else {
+        showToast("Error sending. Please try again.");
+      }
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputMessage(e.target.value);
   };
 
   return (
-    <div>
-      <h1>Chat Page</h1>
-      <input
-        type="text"
-        value={inputMessage}
-        onChange={(e) => setInputMessage(e.target.value)}
-        placeholder="Type your message..."
-      />
-      <button onClick={handleSendMessage}>Send</button>
+    <div
+      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+    >
+      {isConnected && (
+        <ChatInterface
+          messages={messages}
+          inputMessage={inputMessage}
+          onInputChange={handleInputChange}
+          onSendMessage={handleSendMessage}
+        />
+      )}
+      <Form method="post" style={{ marginTop: "20px" }}>
+        <button type="submit">End Chat</button>
+      </Form>
     </div>
   );
 }
