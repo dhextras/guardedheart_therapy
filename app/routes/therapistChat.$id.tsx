@@ -40,7 +40,8 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     user.user_id,
     therapist.id,
     user.name,
-    user.initial_message
+    user.initial_message,
+    therapist.name
   );
   await updateTotalConversations(therapist.id);
 
@@ -119,7 +120,7 @@ export default function TherapistChatPage() {
   const handleSendMessage = () => {
     if (inputMessage.trim()) {
       const success = sendMessageToChat(user.user_id, {
-        name: "Therapist",
+        name: therapist.name,
         message: inputMessage,
       });
 

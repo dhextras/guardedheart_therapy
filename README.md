@@ -61,7 +61,8 @@ CREATE TABLE therapists (
 CREATE TABLE active_conversations (
   id UUID NOT NULL REFERENCES users(id),
   therapist_id UUID NOT NULL REFERENCES therapists(id),
-  userName TEXT,
+  user_name TEXT,
+  therapiast_name TEXT,
   userMessage TEXT,
   started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -113,8 +114,9 @@ This table stores information about ongoing conversations between users and ther
 
 - `id`: A unique identifier for each conversation which is actually the user_id.
 - `therapist_id`: The therapist participating in the conversation.
-- `userName`: An optional name provided by the user or a random generated name.
-- `userMessage`: An optional initial message provided by the user or predefined message ( generated ).
+- `user_name`: An optional name provided by the user or a random generated name.
+- `therapist_name`: The therapist name stored in db.
+- `user_message`: An optional initial message provided by the user or predefined message ( generated ).
 - `started_at`: The time when the conversation started.
 
 ### Pending Users Table

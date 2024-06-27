@@ -19,7 +19,7 @@ export default function ChatInterface({
           End Chat
         </button>
       </div>
-      <div className="flex-grow overflow-y-auto p-4">
+      <div className="max-h-[50vh] flex-grow overflow-y-auto p-4">
         {messages.map((msg, index) => (
           <div
             key={index}

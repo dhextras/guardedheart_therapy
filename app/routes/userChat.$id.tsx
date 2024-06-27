@@ -46,6 +46,7 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     user_id: params.id,
     user_name: user?.name || activeConversation?.user_name,
     user_message: user?.initial_message || activeConversation?.user_message,
+    therapist_name: activeConversation?.therapist_name || "Therapist",
   };
 
   return json(data);
@@ -75,10 +76,11 @@ export default function UserChatPage() {
   const [inputMessage, setInputMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState<Array<messageType>>([]);
-  const { user_id, user_name, user_message } = useLoaderData<{
+  const { user_id, user_name, user_message, therapist_name } = useLoaderData<{
     user_id: string;
     user_name: string;
     user_message: string;
+    therapist_name: string;
   }>();
 
   useEffect(() => {
@@ -154,7 +156,7 @@ export default function UserChatPage() {
             onLeave={handleLeave}
             onInputChange={handleInputChange}
             onSendMessage={handleSendMessage}
-            otherPersonName="Therapist"
+            otherPersonName={therapist_name}
           />
         </div>
       ) : (

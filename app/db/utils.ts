@@ -145,7 +145,8 @@ export const createActiveConversation = async (
   conversationId: string,
   therapistId: string,
   userName: string,
-  userMessage: string
+  userMessage: string,
+  therapistName: string
 ): Promise<ActiveConversation | null> => {
   const { data, error } = await supabase
     .from("active_conversations")
@@ -155,6 +156,7 @@ export const createActiveConversation = async (
         user_name: userName,
         user_message: userMessage,
         therapist_id: therapistId,
+        therapist_name: therapistName,
       },
     ])
     .select();
