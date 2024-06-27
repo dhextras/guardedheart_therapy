@@ -3,9 +3,9 @@ import { createCookieSessionStorage, redirect } from "@remix-run/node";
 import {
   createOnlineTherapist,
   deleteOnlineTherapist,
-} from "./db/utils";
+} from "~/db/utils";
 
-import { Therapist } from "./types/db.types";
+import { Therapist } from "~/types/db.types";
 
 const sessionSecret = process.env.SESSION_SECRET;
 if (!sessionSecret) {

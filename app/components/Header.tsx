@@ -1,32 +1,17 @@
+import LogoSvg from "~/components/Logo";
 import { Link } from "@remix-run/react";
 
 export default function Header() {
   return (
-    <header
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "1rem",
-      }}
-    >
+    <header className="bg-gray-800 py-4 px-6 flex justify-between items-center">
       <div>
         <Link to="/">
-          <img src="/Logo.png" alt="Logo" height="100px" />
+          <LogoSvg />
         </Link>
       </div>
-      <div style={{ display: "flex", gap: "15px" }}>
+      <div>
         <Link to="/therapist">
-          <button
-            style={{
-              padding: "10px",
-              backgroundColor: "#007bff",
-              color: "white",
-              borderRadius: "5px",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
+          <button className="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300">
             Therapist
           </button>
         </Link>

@@ -11,4 +11,5 @@ export interface ChatInterfaceProps {
   onLeave: () => void;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSendMessage: () => void;
+  otherPersonName: string;
 }

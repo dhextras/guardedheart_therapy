@@ -5,7 +5,7 @@ import { LoaderFunctionArgs, ActionFunctionArgs, json } from "@remix-run/node";
 
 import { handleError } from "~/utils/notifications";
 import { getTherapistByCode } from "~/db/utils";
-import { getSession, saveTherapistToSession } from "~/session.server";
+import { getSession, saveTherapistToSession } from "~/utils/session.server";
 
 import type { TherapistData } from "~/types/db.types";
 import type { TherapistErrorActionData } from "~/types/notification.types";
@@ -60,33 +60,55 @@ export default function TherapistLogin() {
 
   if (data && data?.therapist) {
     return (
-      <div>
-        <h1>Welcome, {data.therapist.name}</h1>
-        <p>Total Conversations: {data.therapist.total_conversations}</p>
-        <Form action="/logout" method="post">
-          <button type="submit">Logout</button>
-        </Form>
-        <Link to="/dashboard">
-          <button>Dashboard</button>
-        </Link>
+      <div className="max-w-md mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold mb-2">
+            Welcome, {data.therapist.name}
+          </h1>
+          <p className="text-gray-600">
+            Total Conversations: {data.therapist.total_conversations}
+          </p>
+        </div>
+        <div className="flex justify-center space-x-4">
+          <Form action="/logout" method="post">
+            <button
+              type="submit"
+              className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300"
+            >
+              Logout
+            </button>
+          </Form>
+          <Link to="/dashboard">
+            <button className="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300">
+              Dashboard
+            </button>
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
-      <h1>Therapist Login</h1>
-      <Form method="post">
-        <label>
-          Login
+    <div className="max-w-md mx-auto">
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold">Therapist Login</h1>
+      </div>
+      <Form method="post" className="space-y-4">
+        <div>
           <input
             id="code"
             type="text"
             name="code"
+            className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder="Enter your therapist code..."
           />
-        </label>
-        <button type="submit">Login</button>
+        </div>
+        <button
+          type="submit"
+          className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300"
+        >
+          Login
+        </button>
       </Form>
     </div>
   );

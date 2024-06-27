@@ -6,7 +6,7 @@ import { useLoaderData, Form, useNavigate, useFetcher } from "@remix-run/react";
 import { generateMeta } from "~/utils/generateMeta";
 import ChatInterface from "~/components/ChatInterface";
 import { handleError, showToast } from "~/utils/notifications";
-import { preventUserAccessForTherapists } from "~/session.server";
+import { preventUserAccessForTherapists } from "~/utils/session.server";
 import {
   getActiveConversationById,
   getPendingUserById,
@@ -145,28 +145,36 @@ export default function UserChatPage() {
   };
 
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-    >
+    <div className="max-w-3xl mx-auto">
       {isConnected ? (
-        <>
+        <div className="bg-white rounded-lg shadow-md p-6">
           <ChatInterface
             messages={messages}
             inputMessage={inputMessage}
             onLeave={handleLeave}
             onInputChange={handleInputChange}
             onSendMessage={handleSendMessage}
+            otherPersonName="Therapist"
           />
-        </>
+        </div>
       ) : (
-        <>
-          <h1>Welcome {user_name}</h1>
-          <p>Your initial message: {user_message}</p>
-          <p>Please wait for a therapist to pick you up...</p>
-          <Form method="post" style={{ marginTop: "20px" }}>
-            <button type="submit">Leave</button>
+        <div className="text-center py-8">
+          <h1 className="text-2xl font-bold mb-2">Welcome {user_name}</h1>
+          <p className="text-gray-600 mb-4">
+            Your initial message: {user_message}
+          </p>
+          <p className="text-gray-600">
+            Please wait for a therapist to pick you up...
+          </p>
+          <Form method="post" className="mt-6">
+            <button
+              type="submit"
+              className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300"
+            >
+              Leave
+            </button>
           </Form>
-        </>
+        </div>
       )}
     </div>
   );

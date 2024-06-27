@@ -8,7 +8,7 @@ import {
 } from "~/utils/userDetailsHelper";
 import { handleError } from "~/utils/notifications";
 import { createPendingUser } from "~/db/utils";
-import { preventUserAccessForTherapists } from "~/session.server";
+import { preventUserAccessForTherapists } from "~/utils/session.server";
 
 import type {
   MetaFunction,
@@ -57,29 +57,35 @@ export default function Index() {
   }, [pendingUser]);
 
   return (
-    <div>
-      <div>
-        <h1>Welcome to GuardedHeart Therapy!</h1>
-        <p>Get matched with a therapist ANONYMOUSLY</p>
+    <div className="max-w-md mx-auto">
+      <div className="text-center mb-8">
+        <h1 className="text-4xl font-bold mb-2">Welcome to GuardedHeart Therapy!</h1>
+        <p className="text-gray-600">Get matched with a therapist ANONYMOUSLY</p>
       </div>
 
-      <Form method="post">
+      <Form method="post" className="space-y-4">
         <div>
           <input
             type="text"
             name="userName"
-            style={{ height: "20px", width: "400px" }}
-            placeholder="your name.. feel free to leave empty if you'd like.."
-          />
-          <br />
-          <input
-            type="text"
-            name="userMessage"
-            style={{ height: "100px", width: "600px" }}
-            placeholder="Whatare the problems you are facing.... feel free to leave empty if you'd like.."
+            className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="Your name (optional)"
           />
         </div>
-        <button type="submit">Get a Therapist</button>
+        <div>
+          <textarea
+            name="userMessage"
+            rows={4}
+            className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="What are the problems you are facing? (optional)"
+          />
+        </div>
+        <button
+          type="submit"
+          className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300"
+        >
+          Get a Therapist
+        </button>
       </Form>
     </div>
   );

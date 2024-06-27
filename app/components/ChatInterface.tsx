@@ -6,36 +6,65 @@ export default function ChatInterface({
   onLeave,
   onInputChange,
   onSendMessage,
+  otherPersonName,
 }: ChatInterfaceProps) {
   return (
-    <>
-      <button onClick={onLeave}>x</button>
-      <div
-        style={{
-          height: "300px",
-          overflowY: "scroll",
-          border: "1px solid #ccc",
-          padding: "10px",
-          marginBottom: "10px",
-          width: "80%",
-        }}
-      >
+    <div className="flex flex-col h-full">
+      <div className="flex justify-between items-center bg-gray-800 text-white px-4 py-2">
+        <h2 className="text-lg font-semibold">{otherPersonName}</h2>
+        <button
+          onClick={onLeave}
+          className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-md transition-colors duration-300"
+        >
+          End Chat
+        </button>
+      </div>
+      <div className="flex-grow overflow-y-auto p-4">
         {messages.map((msg, index) => (
-          <div key={index}>
-            <strong>{msg.name}:</strong> {msg.message}
+          <div
+            key={index}
+            className={`mb-4 flex ${
+              msg.name === otherPersonName ? "justify-start" : "justify-end"
+            }`}
+          >
+            <div
+              className={`max-w-[70%] rounded-lg py-2 px-4 ${
+                msg.name === otherPersonName
+                  ? "bg-gray-200 text-gray-800"
+                  : "bg-indigo-500 text-white"
+              }`}
+            >
+              {msg.message}
+            </div>
           </div>
         ))}
       </div>
-      <div style={{ width: "80%", display: "flex" }}>
+      <div className="flex items-center bg-gray-100 p-2">
         <input
           type="text"
           value={inputMessage}
           onChange={onInputChange}
           placeholder="Type your message..."
-          style={{ flexGrow: 1, marginRight: "10px" }}
+          className="flex-grow border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
-        <button onClick={onSendMessage}>Send</button>
+        <button
+          onClick={onSendMessage}
+          className="ml-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300 flex items-center justify-center"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </button>
       </div>
-    </>
+    </div>
   );
 }

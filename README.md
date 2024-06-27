@@ -80,14 +80,6 @@ CREATE TABLE online_therapists (
   therapist_id UUID NOT NULL REFERENCES therapists(id),
   online_since TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
--- Creating rpc function to increament the total_conversations
-CREATE OR REPLACE FUNCTION increment(inc_amount INT)
-RETURNS INT
-LANGUAGE SQL
-AS $$
-  SELECT COALESCE($1, 0) + inc_amount
-$$;
 ```
 
 5. Start the development server:

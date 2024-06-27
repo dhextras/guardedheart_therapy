@@ -9,6 +9,8 @@ import {
 
 import Header from "~/components/Header";
 
+import "./styles/tailwind.css";
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -18,22 +20,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="bg-gray-100">
         <Header />
-        <div
-          style={{
-            border: "2px solid black",
-            margin: "20px",
-            marginTop: "80px",
-            borderRadius: "20px",
-            display: "flex",
-            justifyContent: "center",
-            height: "70vh",
-            padding: "20px",
-          }}
-        >
-          {children}
-        </div>
+        <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-lg shadow-md p-6">{children}</div>
+        </main>
         <ToastContainer />
         <ScrollRestoration />
         <Scripts />

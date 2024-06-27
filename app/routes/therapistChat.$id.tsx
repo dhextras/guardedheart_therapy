@@ -5,7 +5,7 @@ import { useFetcher, useLoaderData, useNavigate } from "@remix-run/react";
 
 import { generateMeta } from "~/utils/generateMeta";
 import ChatInterface from "~/components/ChatInterface";
-import { requireTherapistSession } from "~/session.server";
+import { requireTherapistSession } from "~/utils/session.server";
 import { handleError, showToast } from "~/utils/notifications";
 import {
   createActiveConversation,
@@ -119,7 +119,7 @@ export default function TherapistChatPage() {
   const handleSendMessage = () => {
     if (inputMessage.trim()) {
       const success = sendMessageToChat(user.user_id, {
-        name: therapist.name,
+        name: "Therapist",
         message: inputMessage,
       });
 
@@ -149,21 +149,24 @@ export default function TherapistChatPage() {
   };
 
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
-    >
+    <div className="max-w-3xl mx-auto">
       {isConnected ? (
-        <>
+        <div className="bg-white rounded-lg shadow-md p-6">
           <ChatInterface
             messages={messages}
             inputMessage={inputMessage}
             onLeave={handleLeave}
             onInputChange={handleInputChange}
             onSendMessage={handleSendMessage}
+            otherPersonName={user.name}
           />
-        </>
+        </div>
       ) : (
-        <>Loading... Please wait while we connect you to the user.</>
+        <div className="text-center py-8">
+          <p className="text-gray-600">
+            Loading... Please wait while we connect you to the user.
+          </p>
+        </div>
       )}
     </div>
   );

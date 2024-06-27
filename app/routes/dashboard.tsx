@@ -4,7 +4,7 @@ import { Link, json, useLoaderData, useNavigate } from "@remix-run/react";
 import { getAllPendingUsers } from "~/db/utils";
 import { handleError } from "~/utils/notifications";
 import { generateMeta } from "~/utils/generateMeta";
-import { requireTherapistSession } from "~/session.server";
+import { requireTherapistSession } from "~/utils/session.server";
 
 import type { PendingUser } from "~/types/db.types";
 import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
@@ -48,22 +48,32 @@ export default function Index() {
   }, [user_not_found]);
 
   return (
-    <>
+    <div className="max-w-3xl mx-auto">
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold">Dashboard</h1>
+      </div>
       {pending_users.length === 0 ? (
-        <p>No pending users</p>
+        <p className="text-gray-600 text-center">No pending users</p>
       ) : (
-        <ul>
+        <ul className="divide-y divide-gray-200">
           {pending_users.map((user) => (
-            <li key={user.id}>
-              {user.name} - {user.initial_message}
-              <br></br>
+            <li
+              key={user.id}
+              className="py-4 flex justify-between items-center"
+            >
+              <div>
+                <p className="text-gray-800 font-semibold">{user.name}</p>
+                <p className="text-gray-600">{user.initial_message}</p>
+              </div>
               <Link to={`/therapistChat/${user.user_id}`}>
-                <button>Chat</button>
+                <button className="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300">
+                  Chat
+                </button>
               </Link>
             </li>
           ))}
         </ul>
       )}
-    </>
+    </div>
   );
 }
