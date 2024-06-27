@@ -26,11 +26,12 @@ npm install
    ```bash
    node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
    ```
+
    - Copy the `.env.example` file to a new file called `.env`:
 
-    ```bash
-    cp .env.example .env
-   ````
+   ```bash
+   cp .env.example .env
+   ```
 
    - Open the `.env` file and replace the placeholders with your actual Supabase API URL and `anon` key and session secret:
 
@@ -58,9 +59,10 @@ CREATE TABLE therapists (
 
 -- Create the active_conversations table
 CREATE TABLE active_conversations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID NOT NULL REFERENCES users(id),
+  id UUID NOT NULL REFERENCES users(id),
   therapist_id UUID NOT NULL REFERENCES therapists(id),
+  userName TEXT,
+  userMessage TEXT,
   started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -109,9 +111,10 @@ This table stores information about verified therapists. It has:
 
 This table stores information about ongoing conversations between users and therapists. It has:
 
-- `id`: A unique identifier for each conversation.
-- `user_id`: The user participating in the conversation.
+- `id`: A unique identifier for each conversation which is actually the user_id.
 - `therapist_id`: The therapist participating in the conversation.
+- `userName`: An optional name provided by the user or a random generated name.
+- `userMessage`: An optional initial message provided by the user or predefined message ( generated ).
 - `started_at`: The time when the conversation started.
 
 ### Pending Users Table

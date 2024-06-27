@@ -15,7 +15,8 @@ export type TherapistData = {
 
 export type ActiveConversation = {
   id: string;
-  user_id: string;
+  user_name: string;
+  user_message: string;
   therapist_id: string;
   started_at: Date;
 };

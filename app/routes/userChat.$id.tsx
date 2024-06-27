@@ -1,14 +1,17 @@
-// TODO: Make sure to handle the pending user properly and also send message to remove the active conversations
-
-import { useState, useEffect } from "react";
-import { useLoaderData, Form } from "@remix-run/react";
-import { LoaderFunctionArgs, redirect, json } from "@remix-run/node";
 import invariant from "tiny-invariant";
+import { useState, useEffect } from "react";
+import { redirect, json } from "@remix-run/node";
+import { useLoaderData, Form, useNavigate, useFetcher } from "@remix-run/react";
 
-import { showToast } from "~/utils/notifications";
 import { generateMeta } from "~/utils/generateMeta";
+import ChatInterface from "~/components/ChatInterface";
+import { handleError, showToast } from "~/utils/notifications";
 import { preventUserAccessForTherapists } from "~/session.server";
-import { getPendingUserById, removePendingUser } from "~/db/utils";
+import {
+  getActiveConversationById,
+  getPendingUserById,
+  removePendingUser,
+} from "~/db/utils";
 import {
   initializeSocket,
   sendMessageToChat,
@@ -16,51 +19,86 @@ import {
   disconnectSocket,
 } from "~/utils/socket";
 
-import type { PendingUser } from "~/types/db.types";
-import type { MetaFunction, ActionFunctionArgs } from "@remix-run/node";
-import { messageType } from "~/types/socket.types";
-import ChatInterface from "~/components/ChatInterface";
+import type { messageType } from "~/types/socket.types";
+import type {
+  LoaderFunctionArgs,
+  MetaFunction,
+  ActionFunctionArgs,
+} from "@remix-run/node";
 
 export const meta: MetaFunction = generateMeta("Chat");
 
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   invariant(params.id, "id must be provided");
+
+  let activeConversation = null;
   await preventUserAccessForTherapists(request);
   const user = await getPendingUserById(params.id);
 
   if (user === null) {
-    return redirect("/");
+    activeConversation = await getActiveConversationById(params.id);
+    if (activeConversation === null) {
+      return redirect("/");
+    }
   }
 
-  return json({ user });
+  const data = {
+    user_id: params.id,
+    user_name: user?.name || activeConversation?.user_name,
+    user_message: user?.initial_message || activeConversation?.user_message,
+  };
+
+  return json(data);
 };
 
-export const action = async ({ params }: ActionFunctionArgs) => {
+export const action = async ({ params, request }: ActionFunctionArgs) => {
   invariant(params.id, "id must be provided");
+
+  const formData = await request.formData();
+  const action = formData.get("action");
+
+  if (action === "remove_pending_user") {
+    await removePendingUser(params.id);
+    return json({ success: true });
+  }
+
   disconnectSocket(params.id);
   await removePendingUser(params.id);
   return redirect("/");
 };
 
 export default function UserChatPage() {
+  const fetcher = useFetcher();
+  const navigate = useNavigate();
   let socketInitialized: boolean = false;
-  const { user } = useLoaderData<{
-    user: PendingUser;
-  }>();
-  const [messages, setMessages] = useState<Array<messageType>>([]);
+
   const [inputMessage, setInputMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
+  const [messages, setMessages] = useState<Array<messageType>>([]);
+  const { user_id, user_name, user_message } = useLoaderData<{
+    user_id: string;
+    user_name: string;
+    user_message: string;
+  }>();
 
   useEffect(() => {
     if (socketInitialized) {
-      listenForMessages((message) => {
+      listenForMessages(async (message) => {
         if (
           !isConnected &&
           message?.name === "CONNECTION" &&
           message?.message === "INITIALIZE_CHAT"
         ) {
           setIsConnected(true);
-          showToast("Connected with therapist");
+          showToast("Therapist joined");
+
+          fetcher.submit({ action: "remove_pending_user" }, { method: "post" });
+        } else if (
+          message?.name === "CONNECTION" &&
+          message?.message === "THERAPIST_LEAVE_CHAT"
+        ) {
+          showToast("Therapist left");
+          disconnectSocket(user_id);
         } else {
           if (message) {
             setMessages((prev) => [
@@ -71,21 +109,24 @@ export default function UserChatPage() {
         }
       });
     } else {
-      socketInitialized = initializeSocket(user.id);
+      socketInitialized = initializeSocket(user_id);
     }
-  }, [user.id, socketInitialized, isConnected]);
+  }, [user_id, socketInitialized, isConnected, fetcher]);
 
   const handleSendMessage = () => {
     if (inputMessage.trim()) {
-      const success = sendMessageToChat(user.id, {
-        name: user.name,
+      const success = sendMessageToChat(user_id, {
+        name: user_name,
         message: inputMessage,
       });
 
       if (success) {
         setInputMessage("");
       } else {
-        showToast("Error sending. Please try again.");
+        handleError(
+          "Unable to Access the socket when sending message to chat",
+          "Error sending. Please try again"
+        );
       }
     }
   };
@@ -94,27 +135,39 @@ export default function UserChatPage() {
     setInputMessage(e.target.value);
   };
 
+  const handleLeave = () => {
+    sendMessageToChat(user_id, {
+      name: "CONNECTION",
+      message: "USER_LEAVE_CHAT",
+    });
+    disconnectSocket(user_id);
+    navigate("/");
+  };
+
   return (
     <div
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
     >
       {isConnected ? (
-        <ChatInterface
-          messages={messages}
-          inputMessage={inputMessage}
-          onInputChange={handleInputChange}
-          onSendMessage={handleSendMessage}
-        />
+        <>
+          <ChatInterface
+            messages={messages}
+            inputMessage={inputMessage}
+            onLeave={handleLeave}
+            onInputChange={handleInputChange}
+            onSendMessage={handleSendMessage}
+          />
+        </>
       ) : (
         <>
-          <h1>Welcome {user.name}</h1>
-          <p>Your initial message: {user.initial_message}</p>
+          <h1>Welcome {user_name}</h1>
+          <p>Your initial message: {user_message}</p>
           <p>Please wait for a therapist to pick you up...</p>
+          <Form method="post" style={{ marginTop: "20px" }}>
+            <button type="submit">Leave</button>
+          </Form>
         </>
       )}
-      <Form method="post" style={{ marginTop: "20px" }}>
-        <button type="submit">Leave Chat</button>
-      </Form>
     </div>
   );
 }

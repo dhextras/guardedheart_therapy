@@ -3,11 +3,13 @@ import type { ChatInterfaceProps } from "~/types/socket.types";
 export default function ChatInterface({
   messages,
   inputMessage,
+  onLeave,
   onInputChange,
   onSendMessage,
 }: ChatInterfaceProps) {
   return (
     <>
+      <button onClick={onLeave}>x</button>
       <div
         style={{
           height: "300px",

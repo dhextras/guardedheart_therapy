@@ -42,7 +42,7 @@ export const removePendingUser = async (id: string): Promise<boolean> => {
   const { error } = await supabase
     .from("pending_users")
     .delete()
-    .eq("id", id);
+    .eq("user_id", id);
   if (error) {
     return false;
   }
@@ -55,7 +55,7 @@ export const getPendingUserById = async (
   const { data, error } = await supabase
     .from("pending_users")
     .select("*")
-    .eq("id", id)
+    .eq("user_id", id)
     .single();
   if (error || !data) {
     return null;
@@ -112,33 +112,58 @@ export const deleteOnlineTherapist = async (
   return true;
 };
 
+// Conversation related Db functions
+export const createActiveConversation = async (
+  conversationId: string,
+  therapistId: string,
+  userName: string,
+  userMessage: string
+): Promise<ActiveConversation | null> => {
+  const { data, error } = await supabase
+    .from("active_conversations")
+    .insert([
+      {
+        id: conversationId,
+        user_name: userName,
+        user_message: userMessage,
+        therapist_id: therapistId,
+      },
+    ])
+    .select();
+  if (error || !data) {
+    return null;
+  }
+  return data[0] as ActiveConversation;
+};
+
+export const deleteActiveConversation = async (
+  conversationId: string
+): Promise<boolean> => {
+  const { error } = await supabase
+    .from("active_conversations")
+    .delete()
+    .eq("id", conversationId);
+  if (error) {
+    return false;
+  }
+  return true;
+};
+
+export const getActiveConversationById = async (
+  conversationId: string
+): Promise<ActiveConversation | null> => {
+  const { data, error } = await supabase
+    .from("active_conversations")
+    .select("*")
+    .eq("id", conversationId)
+    .single();
+  if (error || !data) {
+    return null;
+  }
+  return data as ActiveConversation;
+};
+
 // Functions that are not yet been for any usages... will do later..
-
-// // Conversation related Db functions
-// export const createActiveConversation = async (
-//   conversationId: string
-// ): Promise<ActiveConversation | null> => {
-//   const { data, error } = await supabase
-//     .from("active_conversation")
-//     .insert([{ id: conversationId }]);
-//   if (error || !data) {
-//     return null;
-//   }
-//   return data as ActiveConversation;
-// };
-
-// export const deleteActiveConversation = async (
-//   conversationId: string
-// ): Promise<boolean> => {
-//   const { error } = await supabase
-//     .from("active_conversation")
-//     .delete()
-//     .eq("id", conversationId);
-//   if (error) {
-//     return false;
-//   }
-//   return true;
-// };
 
 // // TODO: Real time change listener Db functions
 // export const listenToPendingUsers = (
