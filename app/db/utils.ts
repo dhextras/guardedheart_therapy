@@ -112,6 +112,34 @@ export const deleteOnlineTherapist = async (
   return true;
 };
 
+export const updateTotalConversations = async (
+  therapistId: string
+): Promise<boolean> => {
+  const { data: currentData, error: fetchError } = await supabase
+    .from("therapists")
+    .select("total_conversations")
+    .eq("id", therapistId)
+    .single();
+
+  const currentTotal = currentData?.total_conversations;
+
+  if (fetchError || !currentData || typeof currentTotal !== "number") {
+    return false;
+  }
+
+  const { data: updateData, error: updateError } = await supabase
+    .from("therapists")
+    .update({ total_conversations: currentTotal + 1 })
+    .eq("id", therapistId)
+    .select();
+
+  if (updateError || !!updateData) {
+    return false;
+  }
+
+  return true;
+};
+
 // Conversation related Db functions
 export const createActiveConversation = async (
   conversationId: string,

@@ -11,6 +11,7 @@ import {
   createActiveConversation,
   deleteActiveConversation,
   getPendingUserById,
+  updateTotalConversations,
 } from "~/db/utils";
 import {
   initializeSocket,
@@ -41,6 +42,8 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     user.name,
     user.initial_message
   );
+  await updateTotalConversations(therapist.id);
+
   return json({ user, therapist });
 };
 

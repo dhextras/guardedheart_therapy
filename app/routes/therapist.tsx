@@ -15,7 +15,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const therapist = session.get("therapist");
 
   if (therapist) {
-    return json({ therapist });
+    const updatedTherapist = await getTherapistByCode(therapist.code);
+    session.set("therapist", updatedTherapist);
+    return json({ therapist: updatedTherapist });
   }
 
   return json({});
