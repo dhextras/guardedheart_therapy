@@ -1,5 +1,11 @@
 import { useEffect } from "react";
-import { Form, json, redirect, useActionData } from "@remix-run/react";
+import {
+  Form,
+  json,
+  redirect,
+  useActionData,
+  useNavigation,
+} from "@remix-run/react";
 
 import { generateMeta } from "~/utils/generateMeta";
 import {
@@ -46,11 +52,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function Index() {
   const pendingUser = useActionData<PendingUser>();
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (pendingUser !== undefined) {
       handleError(
-        "Wasn't able to create a pending user on the databse",
+        "Wasn't able to create a pending user on the database",
         "Something wrong. Try again..."
       );
     }
@@ -59,8 +66,12 @@ export default function Index() {
   return (
     <div className="max-w-md mx-auto">
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold mb-2">Welcome to GuardedHeart Therapy!</h1>
-        <p className="text-gray-600">Get matched with a therapist ANONYMOUSLY</p>
+        <h1 className="text-4xl font-bold mb-2">
+          Welcome to GuardedHeart Therapy!
+        </h1>
+        <p className="text-secondary">
+          Get matched with a therapist ANONYMOUSLY
+        </p>
       </div>
 
       <Form method="post" className="space-y-4">
@@ -68,23 +79,28 @@ export default function Index() {
           <input
             type="text"
             name="userName"
-            className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            // placeholder="Your name (optional)"
+            className="w-full bg-background border border-custom rounded-md py-2 px-3 focus:outline-none focus:ring-2 text-black"
+            placeholder="Your name (if you'd like)"
           />
         </div>
         <div>
           <textarea
             name="userMessage"
             rows={4}
-            className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            // placeholder="What are the problems you are facing? (optional)"
+            className="w-full bg-background border border-custom rounded-md py-2 px-3 focus:outline-none focus:ring-2 text-black"
+            placeholder="What's on your mind that's troubling you? We are here to listen."
           />
         </div>
         <button
           type="submit"
-          className="w-full bg-base text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300"
+          disabled={
+            navigation.state === "submitting" || navigation.state === "loading"
+          }
+          className="w-full bg-base text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300 disabled:opacity-50"
         >
-          Get a Therapist
+          {navigation.state === "submitting" || navigation.state === "loading"
+            ? "Starting Chat..."
+            : "Start Chat"}
         </button>
       </Form>
     </div>

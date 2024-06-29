@@ -1,7 +1,13 @@
 import invariant from "tiny-invariant";
 import { useState, useEffect } from "react";
 import { redirect, json } from "@remix-run/node";
-import { useLoaderData, Form, useNavigate, useFetcher } from "@remix-run/react";
+import {
+  useLoaderData,
+  Form,
+  useNavigate,
+  useFetcher,
+  useNavigation,
+} from "@remix-run/react";
 
 import { generateMeta } from "~/utils/generateMeta";
 import ChatInterface from "~/components/ChatInterface";
@@ -78,6 +84,7 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
 export default function UserChatPage() {
   const fetcher = useFetcher();
   const navigate = useNavigate();
+  const navigation = useNavigation();
   let socketInitialized: boolean = false;
 
   const [inputMessage, setInputMessage] = useState("");
@@ -163,9 +170,9 @@ export default function UserChatPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="w-full">
       {isConnected ? (
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="rounded-lg shadow-md h-full">
           <ChatInterface
             messages={messages}
             inputMessage={inputMessage}
@@ -176,9 +183,9 @@ export default function UserChatPage() {
           />
         </div>
       ) : (
-        <div className="text-center flex items-center flex-col py-8">
+        <div className="text-center flex items-center flex-col">
           <h1 className="text-4xl font-bold mb-10">Hello there {user_name}!</h1>
-          <div className="bg-gray-100 rounded-md p-4 mb-4 w-90 items-center">
+          <div className="bg-gray-100 rounded-md p-4 mb-4 w-full max-w-md">
             <p className="text-gray-600">
               Online Therapists: {online_therapists} | Active Conversations:
               {active_conversations}
@@ -186,18 +193,25 @@ export default function UserChatPage() {
           </div>
 
           <div className="flex justify-center items-center mb-4">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2"></div>
           </div>
 
-          <p className="text-gray-600">
+          <p className="text-secondary mb-6">
             Please wait for a therapist to pick you up...
           </p>
-          <Form method="post" className="mt-6">
+          <Form method="post">
             <button
               type="submit"
-              className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300"
+              disabled={
+                navigation.state === "submitting" ||
+                navigation.state === "loading"
+              }
+              className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300 disabled:opacity-50"
             >
-              Leave
+              {navigation.state === "submitting" ||
+              navigation.state === "loading"
+                ? "Leaving..."
+                : "Leave"}
             </button>
           </Form>
         </div>

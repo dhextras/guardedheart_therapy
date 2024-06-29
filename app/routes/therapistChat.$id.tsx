@@ -150,9 +150,9 @@ export default function TherapistChatPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="w-full h-full">
       {isConnected ? (
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="rounded-lg shadow-md h-full">
           <ChatInterface
             messages={messages}
             inputMessage={inputMessage}
@@ -163,9 +163,15 @@ export default function TherapistChatPage() {
           />
         </div>
       ) : (
-        <div className="text-center py-8">
-          <p className="text-gray-600">
-            Loading... Please wait while we connect you to the user.
+        <div className="text-center flex items-center flex-col py-8">
+          <h1 className="text-4xl font-bold mb-10">
+            Connecting to {user.name}
+          </h1>
+          <div className="flex justify-center items-center mb-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2"></div>
+          </div>
+          <p className="text-secondary mb-6">
+            Please wait while we establish the connection...
           </p>
         </div>
       )}

@@ -1,6 +1,12 @@
 import { useEffect } from "react";
 import invariant from "tiny-invariant";
-import { useLoaderData, Form, Link, useActionData } from "@remix-run/react";
+import {
+  useLoaderData,
+  Form,
+  Link,
+  useActionData,
+  useNavigation,
+} from "@remix-run/react";
 import { LoaderFunctionArgs, ActionFunctionArgs, json } from "@remix-run/node";
 
 import { handleError } from "~/utils/notifications";
@@ -49,6 +55,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function TherapistLogin() {
+  const navigation = useNavigation();
   const data = useLoaderData<TherapistData>();
   const actionData = useActionData<TherapistErrorActionData>();
 
@@ -65,7 +72,7 @@ export default function TherapistLogin() {
           <h1 className="text-3xl font-bold mb-2">
             Welcome, {data.therapist.name}
           </h1>
-          <p className="text-gray-600">
+          <p className="text-secondary">
             Total Conversations: {data.therapist.total_conversations}
           </p>
         </div>
@@ -99,15 +106,20 @@ export default function TherapistLogin() {
             id="code"
             type="text"
             name="code"
-            className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full bg-background border border-custom rounded-md py-2 px-3 focus:outline-none focus:ring-2 text-black"
             placeholder="Enter your therapist code..."
           />
         </div>
         <button
           type="submit"
-          className="w-full bg-base text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300"
+          disabled={
+            navigation.state === "submitting" || navigation.state === "loading"
+          }
+          className="w-full bg-base text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300 disabled:opacity-50"
         >
-          Login
+          {navigation.state === "submitting" || navigation.state === "loading"
+            ? "Checking..."
+            : "Login"}
         </button>
       </Form>
     </div>

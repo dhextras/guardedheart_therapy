@@ -1,7 +1,72 @@
+/* Base styles */
+:root {
+  --color-background: #3d3d3d;
+  --color-surface: #202124;
+  --color-primary: #0077cc;
+  --color-primary-hover: #0ab1e7;
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #bdc1c5;
+  --color-border: #2c2c2c;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+}
+
 .bg-base {
-  background-color: #0077cc;
+  background-color: var(--color-primary);
+}
+
+.bg-base-no-hover {
+  background-color: var(--color-primary);
 }
 
 .bg-base:hover {
-  background-color: #0ab1e7;
+  background-color: var(--color-primary-hover);
+}
+
+.bg-surface {
+  background-color: var(--color-surface);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+
+.border-custom {
+  border-color: var(--color-border);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-background);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary);
+}
+
+/* Utility classes for chat interface */
+.max-h-chat {
+  max-height: calc(90vh - 300px);
+}
+
+.min-h-chat {
+  min-height: calc(90vh - 300px);
+}
+
+.chat-bubbles {
+  max-width: 70%;
+  word-wrap: break-word;
+  white-space: pre-wrap;
 }

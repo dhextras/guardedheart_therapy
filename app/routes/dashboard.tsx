@@ -1,5 +1,11 @@
 import { useEffect } from "react";
-import { Link, json, useLoaderData, useNavigate } from "@remix-run/react";
+import {
+  Link,
+  json,
+  useLoaderData,
+  useNavigate,
+  useNavigation,
+} from "@remix-run/react";
 
 import { getAllPendingUsers } from "~/db/utils";
 import { handleError } from "~/utils/notifications";
@@ -24,6 +30,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function Index() {
   const navigate = useNavigate();
+  const navigation = useNavigation();
   const { pending_users, user_not_found } = useLoaderData<{
     pending_users: PendingUser[] | null;
     user_not_found: boolean;
@@ -45,7 +52,7 @@ export default function Index() {
       );
       navigate("/dashboard");
     }
-  }, [user_not_found]);
+  }, [user_not_found, navigate]);
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -53,22 +60,39 @@ export default function Index() {
         <h1 className="text-3xl font-bold">Dashboard</h1>
       </div>
       {pending_users.length === 0 ? (
-        <p className="text-gray-600 text-center">No pending users</p>
+        <p className="text-center">No pending users</p>
       ) : (
-        <ul className="divide-y divide-gray-200">
+        <ul className="space-y-4">
           {pending_users.map((user) => (
             <li
               key={user.id}
-              className="py-4 flex justify-between items-center"
+              className="bg-surface rounded-lg shadow-md p-4 flex justify-between items-center"
             >
               <div>
-                <p className="text-gray-800 font-semibold">{user.name}</p>
-                <p className="text-gray-600">{user.initial_message}</p>
+                <p className="font-semibold">{user.name}</p>
+                <p className="mt-1">{user.initial_message}</p>
               </div>
-              <Link to={`/therapistChat/${user.user_id}`}>
-                <button className="bg-base text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300">
-                  Chat
-                </button>
+              <Link
+                to={`/therapistChat/${user.user_id}`}
+                className={`bg-base text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300 ${
+                  navigation.state === "submitting" ||
+                  navigation.state === "loading"
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+                onClick={(e) => {
+                  if (
+                    navigation.state === "submitting" ||
+                    navigation.state === "loading"
+                  ) {
+                    e.preventDefault();
+                  }
+                }}
+              >
+                {navigation.state === "submitting" ||
+                navigation.state === "loading"
+                  ? "Loading..."
+                  : "Chat"}
               </Link>
             </li>
           ))}
