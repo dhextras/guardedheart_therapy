@@ -69,7 +69,7 @@ export default function Index() {
             type="text"
             name="userName"
             className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            placeholder="Your name (optional)"
+            // placeholder="Your name (optional)"
           />
         </div>
         <div>
@@ -77,12 +77,12 @@ export default function Index() {
             name="userMessage"
             rows={4}
             className="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            placeholder="What are the problems you are facing? (optional)"
+            // placeholder="What are the problems you are facing? (optional)"
           />
         </div>
         <button
           type="submit"
-          className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300"
+          className="w-full bg-base text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300"
         >
           Get a Therapist
         </button>

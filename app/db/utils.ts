@@ -112,6 +112,16 @@ export const deleteOnlineTherapist = async (
   return true;
 };
 
+export const getTotalOnlineTherapist = async (): Promise<number> => {
+  const { data, error } = await supabase
+    .from("online_therapists")
+    .select("*");
+  if (error || !data) {
+    return 0;
+  }
+  return data.length;
+};
+
 export const updateTotalConversations = async (
   therapistId: string
 ): Promise<boolean> => {
@@ -191,6 +201,16 @@ export const getActiveConversationById = async (
     return null;
   }
   return data as ActiveConversation;
+};
+
+export const getTotalActiveConversations = async (): Promise<number> => {
+  const { data, error } = await supabase
+    .from("active_conversations")
+    .select("*");
+  if (error || !data) {
+    return 0;
+  }
+  return data.length;
 };
 
 // Functions that are not yet been for any usages... will do later..

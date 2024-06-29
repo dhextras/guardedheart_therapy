@@ -11,7 +11,7 @@ export default function Header() {
       </div>
       <div>
         <Link to="/therapist">
-          <button className="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300">
+          <button className="bg-base text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300">
             Therapist
           </button>
         </Link>

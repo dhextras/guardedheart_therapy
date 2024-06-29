@@ -10,6 +10,8 @@ import { preventUserAccessForTherapists } from "~/utils/session.server";
 import {
   getActiveConversationById,
   getPendingUserById,
+  getTotalActiveConversations,
+  getTotalOnlineTherapist,
   removePendingUser,
 } from "~/db/utils";
 import {
@@ -42,11 +44,16 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     }
   }
 
+  const totalOnlineTherapists = await getTotalOnlineTherapist();
+  const totalActiveConversation = await getTotalActiveConversations();
+
   const data = {
     user_id: params.id,
     user_name: user?.name || activeConversation?.user_name,
     user_message: user?.initial_message || activeConversation?.user_message,
     therapist_name: activeConversation?.therapist_name || "Therapist",
+    online_therapists: totalOnlineTherapists,
+    active_conversations: totalActiveConversation,
   };
 
   return json(data);
@@ -76,11 +83,20 @@ export default function UserChatPage() {
   const [inputMessage, setInputMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState<Array<messageType>>([]);
-  const { user_id, user_name, user_message, therapist_name } = useLoaderData<{
+  const {
+    user_id,
+    user_name,
+    user_message,
+    therapist_name,
+    online_therapists,
+    active_conversations,
+  } = useLoaderData<{
     user_id: string;
     user_name: string;
     user_message: string;
     therapist_name: string;
+    online_therapists: number;
+    active_conversations: number;
   }>();
 
   useEffect(() => {
@@ -160,11 +176,19 @@ export default function UserChatPage() {
           />
         </div>
       ) : (
-        <div className="text-center py-8">
-          <h1 className="text-2xl font-bold mb-2">Welcome {user_name}</h1>
-          <p className="text-gray-600 mb-4">
-            Your initial message: {user_message}
-          </p>
+        <div className="text-center flex items-center flex-col py-8">
+          <h1 className="text-4xl font-bold mb-10">Hello there {user_name}!</h1>
+          <div className="bg-gray-100 rounded-md p-4 mb-4 w-90 items-center">
+            <p className="text-gray-600">
+              Online Therapists: {online_therapists} | Active Conversations:
+              {active_conversations}
+            </p>
+          </div>
+
+          <div className="flex justify-center items-center mb-4">
+            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500"></div>
+          </div>
+
           <p className="text-gray-600">
             Please wait for a therapist to pick you up...
           </p>

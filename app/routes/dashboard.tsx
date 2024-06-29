@@ -66,7 +66,7 @@ export default function Index() {
                 <p className="text-gray-600">{user.initial_message}</p>
               </div>
               <Link to={`/therapistChat/${user.user_id}`}>
-                <button className="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300">
+                <button className="bg-base text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300">
                   Chat
                 </button>
               </Link>

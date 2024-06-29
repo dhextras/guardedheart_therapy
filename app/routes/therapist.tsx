@@ -79,7 +79,7 @@ export default function TherapistLogin() {
             </button>
           </Form>
           <Link to="/dashboard">
-            <button className="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300">
+            <button className="bg-base text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300">
               Dashboard
             </button>
           </Link>
@@ -105,7 +105,7 @@ export default function TherapistLogin() {
         </div>
         <button
           type="submit"
-          className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300"
+          className="w-full bg-base text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300"
         >
           Login
         </button>

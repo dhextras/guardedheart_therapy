@@ -49,7 +49,7 @@ export default function ChatInterface({
         />
         <button
           onClick={onSendMessage}
-          className="ml-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300 flex items-center justify-center"
+          className="ml-2 bg-base text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300 flex items-center justify-center"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
