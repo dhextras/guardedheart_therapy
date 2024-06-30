@@ -68,6 +68,7 @@ export default function TherapistChatPage() {
   const navigate = useNavigate();
   let socketInitialized: boolean = false;
 
+  const [isOnline, setIsOnline] = useState(false);
   const [inputMessage, setInputMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState<Array<messageType>>([]);
@@ -94,6 +95,7 @@ export default function TherapistChatPage() {
         ) {
           showToast("User left");
           disconnectSocket(user.user_id);
+          setIsOnline(false);
           fetcher.submit({ action: "leave_chat" }, { method: "post" });
         }
       });
@@ -108,6 +110,7 @@ export default function TherapistChatPage() {
 
       if (connectionIntilaized) {
         showToast("Successfully Connected to User");
+        setIsOnline(true);
       } else {
         handleError(
           "Unable to Access the socket when sending initialization message",
@@ -160,6 +163,7 @@ export default function TherapistChatPage() {
             onInputChange={handleInputChange}
             onSendMessage={handleSendMessage}
             otherPersonName={user.name}
+            isOnline={isOnline}
           />
         </div>
       ) : (

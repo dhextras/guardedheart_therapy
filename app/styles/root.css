@@ -1,7 +1,7 @@
 /* Base styles */
 :root {
-  --color-background: #3d3d3d;
-  --color-surface: #202124;
+  --color-background: #202124;
+  --color-surface: #3d3d3d;
   --color-primary: #0077cc;
   --color-primary-hover: #0ab1e7;
   --color-text-primary: #ffffff;
@@ -14,6 +14,13 @@ body {
   color: var(--color-text-primary);
 }
 
+.bg-background {
+  background-image: url("/base-bg.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  width: 100%;
+}
 .bg-base {
   background-color: var(--color-primary);
 }
@@ -44,11 +51,11 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-background);
+  background: var(--color-border);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+  background: var(--color-surface);
   border-radius: 4px;
 }
 
@@ -58,15 +65,18 @@ body {
 
 /* Utility classes for chat interface */
 .max-h-chat {
-  max-height: calc(90vh - 300px);
-}
-
-.min-h-chat {
-  min-height: calc(90vh - 300px);
+  max-height: calc(90vh - 200px);
+  min-height: calc(90vh - 200px);
 }
 
 .chat-bubbles {
   max-width: 70%;
   word-wrap: break-word;
   white-space: pre-wrap;
+}
+
+.bg-chat {
+  background-image: url("/chat-bg.png");
+  background-size: cover;
+  background-repeat: no-repeat;
 }

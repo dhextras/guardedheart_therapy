@@ -87,13 +87,13 @@ export default function UserChatPage() {
   const navigation = useNavigation();
   let socketInitialized: boolean = false;
 
+  const [isOnline, setIsOnline] = useState(false);
   const [inputMessage, setInputMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState<Array<messageType>>([]);
   const {
     user_id,
     user_name,
-    user_message,
     therapist_name,
     online_therapists,
     active_conversations,
@@ -116,6 +116,7 @@ export default function UserChatPage() {
         ) {
           setIsConnected(true);
           showToast("Therapist joined");
+          setIsOnline(true);
 
           fetcher.submit({ action: "remove_pending_user" }, { method: "post" });
         } else if (
@@ -124,6 +125,7 @@ export default function UserChatPage() {
         ) {
           showToast("Therapist left");
           disconnectSocket(user_id);
+          setIsOnline(false);
         } else {
           if (message) {
             setMessages((prev) => [
@@ -180,6 +182,7 @@ export default function UserChatPage() {
             onInputChange={handleInputChange}
             onSendMessage={handleSendMessage}
             otherPersonName={therapist_name}
+            isOnline={isOnline}
           />
         </div>
       ) : (

@@ -8,8 +8,10 @@ export default function ChatInterface({
   onInputChange,
   onSendMessage,
   otherPersonName,
+  isOnline,
 }: ChatInterfaceProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -17,18 +19,43 @@ export default function ChatInterface({
 
   useEffect(scrollToBottom, [messages]);
 
+  const handleSendMessage = () => {
+    onSendMessage();
+    inputRef.current?.focus();
+  };
+
   return (
     <div className="flex flex-col h-full rounded-lg bg-surface">
-      <div className="flex justify-between items-center border-b border-custom px-4 py-2 rounded-t-lg">
-        <h2 className="text-lg font-semibold">{otherPersonName}</h2>
+      <div className="flex justify-between items-center border-b border-custom px-4 py-3 rounded-t-lg">
+        <div className="flex items-center">
+          <div className="w-10 h-10 rounded-full mr-3">
+            <img
+              src="/user-icon.png"
+              className="w-full h-full object-cover rounded-full"
+            />
+          </div>{" "}
+          <div>
+            <h2 className="text-md font-semibold">{otherPersonName}</h2>
+            <p className="text-[10px] text-gray-400">
+              {isOnline ? "Online" : "Offline"}
+            </p>{" "}
+          </div>
+        </div>
         <button
-          onClick={onLeave}
+          onClick={() => {
+            const confirmLeave = window.confirm(
+              "Confirm leaving the chat? Your conversation will not be saved."
+            );
+            if (confirmLeave) {
+              onLeave();
+            }
+          }}
           className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-md transition-colors duration-300"
         >
           End
         </button>
       </div>
-      <div className="flex-grow overflow-y-auto max-h-chat min-h-chat p-4 space-y-4">
+      <div className="flex-grow overflow-y-auto max-h-chat p-4 space-y-4 bg-chat">
         {messages.map((msg, index) => (
           <div
             key={index}
@@ -38,9 +65,7 @@ export default function ChatInterface({
           >
             <div
               className={`chat-bubbles rounded-lg py-2 px-4 text-white ${
-                msg.name === otherPersonName
-                  ? "bg-gray-700"
-                  : "bg-base-no-hover"
+                msg.name === otherPersonName ? "bg-gray-500" : "bg-[#4cb272]"
               }`}
             >
               {msg.message}
@@ -55,10 +80,16 @@ export default function ChatInterface({
           value={inputMessage}
           onChange={onInputChange}
           placeholder="Type your message..."
-          className="flex-grow bg-background border border-custom rounded-md py-2 px-3 focus:outline-none focus:ring-2 text-black"
+          className="flex-grow border border-custom rounded-md py-2 px-3 focus:outline-none focus:ring-2 text-black"
+          ref={inputRef}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSendMessage();
+            }
+          }}
         />
         <button
-          onClick={onSendMessage}
+          onClick={handleSendMessage}
           className="ml-2 bg-base-no-hover text-white font-semibold py-2.5 px-4 rounded-md transition-colors duration-300 flex items-center hover:outline-none hover:ring-2 justify-center"
         >
           <svg

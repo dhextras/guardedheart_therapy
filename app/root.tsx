@@ -21,10 +21,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="bg-background text min-h-screen flex flex-col">
+      <body className="text min-h-screen flex flex-col">
         <Header />
-        <main className="py-8 px-4 sm:px-6 lg:px-8 flex-grow flex items-center justify-center">
-          <div className="bg-surface rounded-lg shadow-md w-full max-w-4xl overflow-y-auto py-8">
+        <main className="bg-background  py-8 px-4 sm:px-6 lg:px-8 flex-grow flex items-center justify-center">
+          <div className="bg-surface rounded-lg shadow-md w-full max-w-4xl overflow-y-auto ">
             {children}
           </div>
         </main>

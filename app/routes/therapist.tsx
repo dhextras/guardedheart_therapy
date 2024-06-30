@@ -106,7 +106,7 @@ export default function TherapistLogin() {
             id="code"
             type="text"
             name="code"
-            className="w-full bg-background border border-custom rounded-md py-2 px-3 focus:outline-none focus:ring-2 text-black"
+            className="w-full border border-custom rounded-md py-2 px-3 focus:outline-none focus:ring-2 text-black"
             placeholder="Enter your therapist code..."
           />
         </div>

@@ -12,4 +12,5 @@ export interface ChatInterfaceProps {
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSendMessage: () => void;
   otherPersonName: string;
+  isOnline: boolean;
 }

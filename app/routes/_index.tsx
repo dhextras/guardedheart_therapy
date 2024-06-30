@@ -79,7 +79,7 @@ export default function Index() {
           <input
             type="text"
             name="userName"
-            className="w-full bg-background border border-custom rounded-md py-2 px-3 focus:outline-none focus:ring-2 text-black"
+            className="w-full border border-custom rounded-md py-2 px-3 focus:outline-none focus:ring-2 text-black "
             placeholder="Your name (if you'd like)"
           />
         </div>
@@ -87,7 +87,7 @@ export default function Index() {
           <textarea
             name="userMessage"
             rows={4}
-            className="w-full bg-background border border-custom rounded-md py-2 px-3 focus:outline-none focus:ring-2 text-black"
+            className="w-full border border-custom rounded-md py-2 px-3 focus:outline-none focus:ring-2 text-black bg-white"
             placeholder="What's on your mind that's troubling you? We are here to listen."
           />
         </div>
