@@ -55,6 +55,7 @@ CREATE TABLE therapists (
   code TEXT UNIQUE NOT NULL,
   name TEXT,
   total_conversations INTEGER DEFAULT 0
+  last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Create the active_conversations table
@@ -107,6 +108,7 @@ This table stores information about verified therapists. It has:
 - `name`: Name of the therapist.
 - `code`: A unique code for each therapist to log in.
 - `total_conversations`: The total number of conversations a therapist has had.
+- `last_login`: The time when the therapist logged into the account via the code.
 
 ### Active Conversations Table
 

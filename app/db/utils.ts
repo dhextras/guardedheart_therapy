@@ -113,9 +113,7 @@ export const deleteOnlineTherapist = async (
 };
 
 export const getTotalOnlineTherapist = async (): Promise<number> => {
-  const { data, error } = await supabase
-    .from("online_therapists")
-    .select("*");
+  const { data, error } = await supabase.from("online_therapists").select("*");
   if (error || !data) {
     return 0;
   }
@@ -144,6 +142,22 @@ export const updateTotalConversations = async (
     .select();
 
   if (updateError || !!updateData) {
+    return false;
+  }
+
+  return true;
+};
+
+export const updateLastLogin = async (
+  therapistId: string
+): Promise<boolean> => {
+  const { data, error } = await supabase
+    .from("therapists")
+    .update({ last_login: "now()" })
+    .eq("id", therapistId)
+    .select();
+
+  if (error || !data) {
     return false;
   }
 

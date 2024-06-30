@@ -111,6 +111,10 @@ export default function TherapistChatPage() {
       if (connectionIntilaized) {
         showToast("Successfully Connected to User");
         setIsOnline(true);
+        setMessages((prev) => [
+          ...prev,
+          { name: user.name, message: user.initial_message },
+        ]);
       } else {
         handleError(
           "Unable to Access the socket when sending initialization message",

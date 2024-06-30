@@ -25,7 +25,7 @@ export default function ChatInterface({
   };
 
   return (
-    <div className="flex flex-col h-full rounded-lg bg-surface">
+    <div className="flex flex-col max-h-secondary-div rounded-lg bg-surface">
       <div className="flex justify-between items-center border-b border-custom px-4 py-3 rounded-t-lg">
         <div className="flex items-center">
           <div className="w-10 h-10 rounded-full mr-3">
@@ -55,7 +55,7 @@ export default function ChatInterface({
           End
         </button>
       </div>
-      <div className="flex-grow overflow-y-auto max-h-chat p-4 space-y-4 bg-chat">
+      <div className="flex-grow overflow-y-auto  p-4 space-y-4 bg-chat">
         {messages.map((msg, index) => (
           <div
             key={index}
@@ -80,7 +80,7 @@ export default function ChatInterface({
           value={inputMessage}
           onChange={onInputChange}
           placeholder="Type your message..."
-          className="flex-grow border border-custom rounded-md py-2 px-3 focus:outline-none focus:ring-2 text-black"
+          className="flex-grow border border-custom rounded-md py-2 px-3 focus:outline-none focus:ring-2 text-black bg-gray"
           ref={inputRef}
           onKeyDown={(e) => {
             if (e.key === "Enter") {

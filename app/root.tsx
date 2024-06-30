@@ -23,8 +23,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
       </head>
       <body className="text min-h-screen flex flex-col">
         <Header />
-        <main className="bg-background  py-8 px-4 sm:px-6 lg:px-8 flex-grow flex items-center justify-center">
-          <div className="bg-surface rounded-lg shadow-md w-full max-w-4xl overflow-y-auto ">
+        <main className="bg-background py-8 px-4 sm:px-6 lg:px-8 flex-grow flex items-center justify-center">
+          <div className="bg-surface rounded-lg shadow-md w-full max-w-4xl overflow-y-auto max-h-secondary-div">
             {children}
           </div>
         </main>

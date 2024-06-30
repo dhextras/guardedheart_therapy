@@ -67,13 +67,19 @@ export default function TherapistLogin() {
 
   if (data && data?.therapist) {
     return (
-      <div className="max-w-md mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold mb-2">
-            Welcome, {data.therapist.name}
+      <div className="max-w-md mx-auto flex flex-col max-h-secondary-div py-6">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold">
+            Welcome back, {data.therapist.name}
           </h1>
+        </div>
+        <div className="border rounded-2xl p-4 text-center my-auto">
           <p className="text-secondary">
-            Total Conversations: {data.therapist.total_conversations}
+            Your total conversations: {data.therapist.total_conversations}
+          </p>
+          <p className="text-secondary">
+            Successfully logged in at:{" "}
+            {new Date(data.therapist.last_login).toLocaleString()}{" "}
           </p>
         </div>
         <div className="flex justify-center space-x-4">
@@ -96,32 +102,44 @@ export default function TherapistLogin() {
   }
 
   return (
-    <div className="max-w-md mx-auto">
+    <div className="max-w-md mx-auto flex flex-col max-h-secondary-div py-6">
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold">Therapist Login</h1>
       </div>
-      <Form method="post" className="space-y-4">
-        <div>
-          <input
-            id="code"
-            type="text"
-            name="code"
-            className="w-full border border-custom rounded-md py-2 px-3 focus:outline-none focus:ring-2 text-black"
-            placeholder="Enter your therapist code..."
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={
-            navigation.state === "submitting" || navigation.state === "loading"
-          }
-          className="w-full bg-base text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300 disabled:opacity-50"
-        >
-          {navigation.state === "submitting" || navigation.state === "loading"
-            ? "Checking..."
-            : "Login"}
-        </button>
-      </Form>
+      <div className="border rounded-2xl p-4 text-center my-auto">
+        <p className="mt-2">
+          Registration is not available through the web app. Please contact the
+          admin if you are a verified therapist or want to become a therapist.
+        </p>
+      </div>
+      <div className="flex flex-col">
+        <Form method="post" className="flex flex-col gap-2 space-y-4 mb-2">
+          <div>
+            <label htmlFor="code" className="font-semibold">
+              Enter your Therapist Code:
+            </label>
+            <input
+              id="code"
+              type="text"
+              name="code"
+              className="w-full border border-custom rounded-md py-2 px-3 focus:outline-none focus:ring-2 text-black"
+              placeholder="EX:- John$fdsal"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={
+              navigation.state === "submitting" ||
+              navigation.state === "loading"
+            }
+            className="w-full bg-base text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300 disabled:opacity-50"
+          >
+            {navigation.state === "submitting" || navigation.state === "loading"
+              ? "Checking..."
+              : "Login"}
+          </button>
+        </Form>
+      </div>
     </div>
   );
 }

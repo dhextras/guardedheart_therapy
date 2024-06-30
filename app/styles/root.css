@@ -45,17 +45,22 @@ body {
   border-color: var(--color-border);
 }
 
+.max-h-secondary-div {
+  max-height: calc(90vh - 100px);
+  min-height: calc(90vh - 100px);
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-border);
+  background: var(--color-surface);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-surface);
+  background: var(--color-border);
   border-radius: 4px;
 }
 
@@ -64,11 +69,6 @@ body {
 }
 
 /* Utility classes for chat interface */
-.max-h-chat {
-  max-height: calc(90vh - 200px);
-  min-height: calc(90vh - 200px);
-}
-
 .chat-bubbles {
   max-width: 70%;
   word-wrap: break-word;

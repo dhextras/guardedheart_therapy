@@ -7,6 +7,7 @@ export type Therapist = {
   name: string;
   code: string;
   total_conversations: number;
+  last_login: Date;
 };
 
 export type TherapistData = {

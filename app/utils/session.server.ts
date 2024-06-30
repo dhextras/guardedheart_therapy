@@ -3,6 +3,7 @@ import { createCookieSessionStorage, redirect } from "@remix-run/node";
 import {
   createOnlineTherapist,
   deleteOnlineTherapist,
+  updateLastLogin,
 } from "~/db/utils";
 
 import { Therapist } from "~/types/db.types";
@@ -48,10 +49,14 @@ export async function preventUserAccessForTherapists(request: Request) {
   return null;
 }
 
-export async function saveTherapistToSession(therapist: Therapist, request: Request) {
+export async function saveTherapistToSession(
+  therapist: Therapist,
+  request: Request
+) {
   const session = await getSession(request.headers.get("Cookie"));
   session.set("therapist", therapist);
   await createOnlineTherapist(therapist.id);
+  await updateLastLogin(therapist.id);
 
   return redirect("/dashboard", {
     headers: {

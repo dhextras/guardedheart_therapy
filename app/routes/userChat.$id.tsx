@@ -186,37 +186,46 @@ export default function UserChatPage() {
           />
         </div>
       ) : (
-        <div className="text-center flex items-center flex-col">
-          <h1 className="text-4xl font-bold mb-10">Hello there {user_name}!</h1>
-          <div className="bg-gray-100 rounded-md p-4 mb-4 w-full max-w-md">
-            <p className="text-gray-600">
+        <div className="max-w-md mx-auto flex flex-col max-h-secondary-div py-6">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold mb-2">
+              Hello there {user_name}!
+            </h1>
+          </div>
+
+          <div className="bg-gray-100 rounded-md p-4 mb-4 w-full my-auto mb-auto">
+            <p className="text-gray-600 text-center justify-center">
               Online Therapists: {online_therapists} | Active Conversations:
               {active_conversations}
             </p>
           </div>
+          <div className="flex flex-col">
+            <div className="flex justify-center items-center my-2">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2"></div>
+            </div>
 
-          <div className="flex justify-center items-center mb-4">
-            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2"></div>
+            <p className="text-secondary mb-8 text-center">
+              Please wait for a therapist to pick you up...
+            </p>
+
+            <div className="flex justify-center space-x-4">
+              <Form method="post">
+                <button
+                  type="submit"
+                  disabled={
+                    navigation.state === "submitting" ||
+                    navigation.state === "loading"
+                  }
+                  className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300 disabled:opacity-50"
+                >
+                  {navigation.state === "submitting" ||
+                  navigation.state === "loading"
+                    ? "Leaving..."
+                    : "Leave"}
+                </button>
+              </Form>
+            </div>
           </div>
-
-          <p className="text-secondary mb-6">
-            Please wait for a therapist to pick you up...
-          </p>
-          <Form method="post">
-            <button
-              type="submit"
-              disabled={
-                navigation.state === "submitting" ||
-                navigation.state === "loading"
-              }
-              className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300 disabled:opacity-50"
-            >
-              {navigation.state === "submitting" ||
-              navigation.state === "loading"
-                ? "Leaving..."
-                : "Leave"}
-            </button>
-          </Form>
         </div>
       )}
     </div>

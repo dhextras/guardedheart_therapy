@@ -55,22 +55,40 @@ export default function Index() {
   }, [user_not_found, navigate]);
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-3xl mx-auto flex flex-col max-h-secondary-div py-6">
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold">Dashboard</h1>
       </div>
       {pending_users.length === 0 ? (
-        <p className="text-center">No pending users</p>
+        <h3 className="text-center my-auto">
+          There are currently no users waiting for a chat session.
+        </h3>
       ) : (
-        <ul className="space-y-4">
+        <ul className="space-y-4 overflow-y-auto">
           {pending_users.map((user) => (
             <li
               key={user.id}
-              className="bg-surface rounded-lg shadow-md p-4 flex justify-between items-center"
+              className="rounded-lg shadow-lg bg-[#4d4d4d] p-4 flex justify-between items-center m-4"
             >
-              <div>
-                <p className="font-semibold">{user.name}</p>
-                <p className="mt-1">{user.initial_message}</p>
+              <div className="flex items-center">
+                <div className="w-10 h-10 rounded-full mr-3">
+                  <img
+                    src="/user-icon.png"
+                    className="w-full h-full object-cover rounded-full"
+                  />
+                </div>
+                <div>
+                  <h2 className="text-md font-semibold">
+                    {user.name.length > 20
+                      ? `${user.name.slice(0, 20)}...`
+                      : user.name}
+                  </h2>
+                  <p className="text-[12px] text-gray-400 rounded-md bg-custom">
+                    {user.initial_message.length > 80
+                      ? `${user.initial_message.slice(0, 80)}...`
+                      : user.initial_message}
+                  </p>
+                </div>
               </div>
               <Link
                 to={`/therapistChat/${user.user_id}`}

@@ -64,7 +64,7 @@ export default function Index() {
   }, [pendingUser]);
 
   return (
-    <div className="max-w-md mx-auto">
+    <div className="max-w-md mx-auto flex flex-col justify-between max-h-secondary-div py-6">
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold mb-2">
           Welcome to GuardedHeart Therapy!
@@ -74,35 +74,38 @@ export default function Index() {
         </p>
       </div>
 
-      <Form method="post" className="space-y-4">
-        <div>
-          <input
-            type="text"
-            name="userName"
-            className="w-full border border-custom rounded-md py-2 px-3 focus:outline-none focus:ring-2 text-black "
-            placeholder="Your name (if you'd like)"
-          />
-        </div>
-        <div>
-          <textarea
-            name="userMessage"
-            rows={4}
-            className="w-full border border-custom rounded-md py-2 px-3 focus:outline-none focus:ring-2 text-black bg-white"
-            placeholder="What's on your mind that's troubling you? We are here to listen."
-          />
-        </div>
-        <button
-          type="submit"
-          disabled={
-            navigation.state === "submitting" || navigation.state === "loading"
-          }
-          className="w-full bg-base text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300 disabled:opacity-50"
-        >
-          {navigation.state === "submitting" || navigation.state === "loading"
-            ? "Starting Chat..."
-            : "Start Chat"}
-        </button>
-      </Form>
+      <div className="flex flex-col space-y-4">
+        <Form method="post" className="flex flex-col space-y-4 mb-2">
+          <div>
+            <input
+              type="text"
+              name="userName"
+              className="w-full border border-custom rounded-md py-2 px-3 focus:outline-none focus:ring-2 text-black "
+              placeholder="Your name (if you'd like)"
+            />
+          </div>
+          <div>
+            <textarea
+              name="userMessage"
+              rows={4}
+              className="w-full border border-custom rounded-md py-2 px-3 focus:outline-none focus:ring-2 text-black bg-white"
+              placeholder="What's on your mind that's troubling you? We are here to listen."
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={
+              navigation.state === "submitting" ||
+              navigation.state === "loading"
+            }
+            className="w-full bg-base text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300 disabled:opacity-50 "
+          >
+            {navigation.state === "submitting" || navigation.state === "loading"
+              ? "Starting Chat..."
+              : "Start Chat"}
+          </button>
+        </Form>
+      </div>
     </div>
   );
 }
