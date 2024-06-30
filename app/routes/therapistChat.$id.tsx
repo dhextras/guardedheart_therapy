@@ -1,7 +1,12 @@
 import invariant from "tiny-invariant";
 import { useState, useEffect } from "react";
 import { redirect, json } from "@remix-run/node";
-import { useFetcher, useLoaderData, useNavigate } from "@remix-run/react";
+import {
+  useFetcher,
+  useLoaderData,
+  useNavigate,
+  useNavigation,
+} from "@remix-run/react";
 
 import { generateMeta } from "~/utils/generateMeta";
 import ChatInterface from "~/components/ChatInterface";
@@ -11,6 +16,7 @@ import {
   createActiveConversation,
   deleteActiveConversation,
   getPendingUserById,
+  removePendingUser,
   updateTotalConversations,
 } from "~/db/utils";
 import {
@@ -44,33 +50,30 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
     therapist.name
   );
   await updateTotalConversations(therapist.id);
-
   return json({ user, therapist });
 };
 
 export const action = async ({ params, request }: LoaderFunctionArgs) => {
   invariant(params.id, "id must be provided");
-  disconnectSocket(params.id);
 
   const formData = await request.formData();
   const action = formData.get("action");
 
   if (action === "leave_chat") {
     await deleteActiveConversation(params.id);
+    await removePendingUser(params.id);
     return json({ success: true });
   }
-
-  return redirect("/dashboard");
 };
 
 export default function TherapistChatPage() {
   const fetcher = useFetcher();
   const navigate = useNavigate();
-  let socketInitialized: boolean = false;
 
   const [isOnline, setIsOnline] = useState(false);
   const [inputMessage, setInputMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
+  const [socketInitialized, setSocketInitialized] = useState(false);
   const [messages, setMessages] = useState<Array<messageType>>([]);
   const { user, therapist } = useLoaderData<{
     user: PendingUser;
@@ -99,10 +102,9 @@ export default function TherapistChatPage() {
           fetcher.submit({ action: "leave_chat" }, { method: "post" });
         }
       });
-
       setIsConnected(true);
     } else {
-      socketInitialized = initializeSocket(user.user_id);
+      setSocketInitialized(initializeSocket(user.user_id));
       const connectionIntilaized = sendMessageToChat(user.user_id, {
         name: "CONNECTION",
         message: "INITIALIZE_CHAT",
@@ -111,6 +113,7 @@ export default function TherapistChatPage() {
       if (connectionIntilaized) {
         showToast("Successfully Connected to User");
         setIsOnline(true);
+
         setMessages((prev) => [
           ...prev,
           { name: user.name, message: user.initial_message },
@@ -122,7 +125,7 @@ export default function TherapistChatPage() {
         );
       }
     }
-  }, [user.user_id, socketInitialized]);
+  }, [socketInitialized]);
 
   const handleSendMessage = () => {
     if (inputMessage.trim()) {

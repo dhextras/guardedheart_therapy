@@ -38,8 +38,8 @@ export default function Index() {
 
   if (pending_users === null) {
     handleError(
-      "Error getting users...",
-      "There was an error loading the pending users"
+      "There was an error loading the pending users, from the database",
+      "Couldn't get user. Please try again"
     );
     return;
   }
@@ -47,8 +47,8 @@ export default function Index() {
   useEffect(() => {
     if (user_not_found) {
       handleError(
-        "User not found",
-        "The user you were trying to chat with was not found"
+        "The user you were trying to chat with was not found under pending users, probably either he got connected with other therapist or left",
+        "User not found"
       );
       navigate("/dashboard");
     }

@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { redirect, json } from "@remix-run/node";
 import {
   useLoaderData,
-  Form,
   useNavigate,
   useFetcher,
   useNavigation,
@@ -67,7 +66,6 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
 
 export const action = async ({ params, request }: ActionFunctionArgs) => {
   invariant(params.id, "id must be provided");
-
   const formData = await request.formData();
   const action = formData.get("action");
 
@@ -76,20 +74,18 @@ export const action = async ({ params, request }: ActionFunctionArgs) => {
     return json({ success: true });
   }
 
-  disconnectSocket(params.id);
-  await removePendingUser(params.id);
-  return redirect("/");
+  return json({});
 };
 
 export default function UserChatPage() {
   const fetcher = useFetcher();
   const navigate = useNavigate();
   const navigation = useNavigation();
-  let socketInitialized: boolean = false;
 
   const [isOnline, setIsOnline] = useState(false);
   const [inputMessage, setInputMessage] = useState("");
   const [isConnected, setIsConnected] = useState(false);
+  const [socketInitialized, setSocketInitialized] = useState(false);
   const [messages, setMessages] = useState<Array<messageType>>([]);
   const {
     user_id,
@@ -114,9 +110,9 @@ export default function UserChatPage() {
           message?.name === "CONNECTION" &&
           message?.message === "INITIALIZE_CHAT"
         ) {
+          setIsOnline(true);
           setIsConnected(true);
           showToast("Therapist joined");
-          setIsOnline(true);
 
           fetcher.submit({ action: "remove_pending_user" }, { method: "post" });
         } else if (
@@ -136,9 +132,9 @@ export default function UserChatPage() {
         }
       });
     } else {
-      socketInitialized = initializeSocket(user_id);
+      setSocketInitialized(initializeSocket(user_id));
     }
-  }, [user_id, socketInitialized, isConnected, fetcher]);
+  }, [socketInitialized]);
 
   const handleSendMessage = () => {
     if (inputMessage.trim()) {
@@ -162,11 +158,17 @@ export default function UserChatPage() {
     setInputMessage(e.target.value);
   };
 
-  const handleLeave = () => {
+  const handleChatPageLeave = () => {
     sendMessageToChat(user_id, {
       name: "CONNECTION",
       message: "USER_LEAVE_CHAT",
     });
+    disconnectSocket(user_id);
+    navigate("/");
+  };
+
+  const handleWaitPageLeave = () => {
+    fetcher.submit({ action: "remove_pending_user" }, { method: "post" });
     disconnectSocket(user_id);
     navigate("/");
   };
@@ -178,7 +180,7 @@ export default function UserChatPage() {
           <ChatInterface
             messages={messages}
             inputMessage={inputMessage}
-            onLeave={handleLeave}
+            onLeave={handleChatPageLeave}
             onInputChange={handleInputChange}
             onSendMessage={handleSendMessage}
             otherPersonName={therapist_name}
@@ -209,21 +211,19 @@ export default function UserChatPage() {
             </p>
 
             <div className="flex justify-center space-x-4">
-              <Form method="post">
-                <button
-                  type="submit"
-                  disabled={
-                    navigation.state === "submitting" ||
-                    navigation.state === "loading"
-                  }
-                  className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300 disabled:opacity-50"
-                >
-                  {navigation.state === "submitting" ||
+              <button
+                onClick={handleWaitPageLeave}
+                disabled={
+                  navigation.state === "submitting" ||
                   navigation.state === "loading"
-                    ? "Leaving..."
-                    : "Leave"}
-                </button>
-              </Form>
+                }
+                className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300 disabled:opacity-50"
+              >
+                {navigation.state === "submitting" ||
+                navigation.state === "loading"
+                  ? "Leaving..."
+                  : "Leave"}
+              </button>{" "}
             </div>
           </div>
         </div>
