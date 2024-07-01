@@ -9,7 +9,7 @@ import {
 } from "@remix-run/react";
 
 import { generateMeta } from "~/utils/generateMeta";
-import ChatInterface from "~/components/ChatInterface";
+import { ChatInterface } from "~/components/ChatInterface";
 import { handleError, showToast } from "~/utils/notifications";
 import { preventUserAccessForTherapists } from "~/utils/session.server";
 import {
@@ -35,6 +35,11 @@ import type {
 
 export const meta: MetaFunction = generateMeta("Chat");
 
+/**
+ * Loader function to fetch data for the chat page
+ * @param {LoaderFunctionArgs} args - Remix loader function arguments
+ * @returns {Promise<Response>} - JSON response with user and chat data
+ */
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   invariant(params.id, "id must be provided");
 
@@ -64,6 +69,11 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   return json(data);
 };
 
+/**
+ * Action function to handle form submissions
+ * @param {ActionFunctionArgs} args - Remix action function arguments
+ * @returns {Promise<Response>} - JSON response with success status
+ */
 export const action = async ({ params, request }: ActionFunctionArgs) => {
   invariant(params.id, "id must be provided");
   const formData = await request.formData();

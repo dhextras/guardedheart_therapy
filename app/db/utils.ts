@@ -8,7 +8,12 @@ import type {
   ActiveConversation,
 } from "~/types/db.types";
 
-// User related Db functions
+// FUNCTION SET 1 - User related Db functions
+
+/**
+ * Creates a new user record in the database.
+ * @returns The created User object, or null if an error occurred.
+ */
 export const createUser = async (): Promise<User | null> => {
   const { data, error } = await supabase.from("users").insert([{}]).select();
   if (error || !data) {
@@ -17,6 +22,12 @@ export const createUser = async (): Promise<User | null> => {
   return data[0] as User;
 };
 
+/**
+ * Creates a new pending user record with the provided name and initial message.
+ * @param name - The name of the pending user.
+ * @param initialMessage - The initial message from the pending user.
+ * @returns The created PendingUser object, or null if an error occurred.
+ */
 export const createPendingUser = async (
   name: string,
   initialMessage: string
@@ -38,6 +49,11 @@ export const createPendingUser = async (
   return data[0] as PendingUser;
 };
 
+/**
+ * Removes a pending user record from the database based on the provided user ID.
+ * @param id - The ID of the user to remove.
+ * @returns True if the removal was successful, false otherwise.
+ */
 export const removePendingUser = async (id: string): Promise<boolean> => {
   const { error } = await supabase
     .from("pending_users")
@@ -49,6 +65,11 @@ export const removePendingUser = async (id: string): Promise<boolean> => {
   return true;
 };
 
+/**
+ * Retrieves a pending user record from the database based on the provided user ID.
+ * @param id - The ID of the user to retrieve.
+ * @returns The PendingUser object, or null if not found or an error occurred.
+ */
 export const getPendingUserById = async (
   id: string
 ): Promise<PendingUser | null> => {
@@ -63,6 +84,10 @@ export const getPendingUserById = async (
   return data as PendingUser;
 };
 
+/**
+ * Retrieves all pending user records from the database.
+ * @returns An array of PendingUser objects, or null if an error occurred.
+ */
 export const getAllPendingUsers = async (): Promise<PendingUser[] | null> => {
   const { data, error } = await supabase.from("pending_users").select("*");
   if (error || !data) {
@@ -71,7 +96,13 @@ export const getAllPendingUsers = async (): Promise<PendingUser[] | null> => {
   return data as PendingUser[];
 };
 
-// Therapist related Db functions
+// FUNCTION SET 2 - Therapist related Db functions
+
+/**
+ * Retrieves a therapist record from the database based on the provided code.
+ * @param code - The code of the therapist to retrieve.
+ * @returns The Therapist object, or null if not found or an error occurred.
+ */
 export const getTherapistByCode = async (
   code: string
 ): Promise<Therapist | null> => {
@@ -86,6 +117,11 @@ export const getTherapistByCode = async (
   return data as Therapist;
 };
 
+/**
+ * Creates a new online therapist record with the provided therapist ID.
+ * @param therapistId - The ID of the therapist.
+ * @returns The created OnlineTherapist object, or null if an error occurred.
+ */
 export const createOnlineTherapist = async (
   therapistId: string
 ): Promise<OnlineTherapist | null> => {
@@ -99,6 +135,11 @@ export const createOnlineTherapist = async (
   return data[0] as OnlineTherapist;
 };
 
+/**
+ * Removes an online therapist record from the database based on the provided therapist ID.
+ * @param therapistId - The ID of the therapist to remove.
+ * @returns True if the removal was successful, false otherwise.
+ */
 export const deleteOnlineTherapist = async (
   therapistId: string
 ): Promise<boolean> => {
@@ -112,6 +153,10 @@ export const deleteOnlineTherapist = async (
   return true;
 };
 
+/**
+ * Retrieves the total count of online therapists from the database.
+ * @returns The total count of online therapists.
+ */
 export const getTotalOnlineTherapist = async (): Promise<number> => {
   const { data, error } = await supabase.from("online_therapists").select("*");
   if (error || !data) {
@@ -120,6 +165,11 @@ export const getTotalOnlineTherapist = async (): Promise<number> => {
   return data.length;
 };
 
+/**
+ * Updates the total conversations count for the given therapist ID.
+ * @param therapistId - The ID of the therapist.
+ * @returns True if the update was successful, false otherwise.
+ */
 export const updateTotalConversations = async (
   therapistId: string
 ): Promise<boolean> => {
@@ -135,19 +185,24 @@ export const updateTotalConversations = async (
     return false;
   }
 
-  const { data: updateData, error: updateError } = await supabase
+  const { error: updateError } = await supabase
     .from("therapists")
     .update({ total_conversations: currentTotal + 1 })
     .eq("id", therapistId)
     .select();
 
-  if (updateError || !!updateData) {
+  if (updateError) {
     return false;
   }
 
   return true;
 };
 
+/**
+ * Updates the last login time for the given therapist ID.
+ * @param therapistId - The ID of the therapist.
+ * @returns True if the update was successful, false otherwise.
+ */
 export const updateLastLogin = async (
   therapistId: string
 ): Promise<boolean> => {
@@ -164,7 +219,17 @@ export const updateLastLogin = async (
   return true;
 };
 
-// Conversation related Db functions
+// FUNCTION SET 3 - Conversation related Db functions
+
+/**
+ * Creates a new active conversation record in the database.
+ * @param conversationId - The ID of the conversation.
+ * @param therapistId - The ID of the therapist.
+ * @param userName - The name of the user.
+ * @param userMessage - The initial message from the user.
+ * @param therapistName - The name of the therapist.
+ * @returns The created ActiveConversation object, or null if an error occurred.
+ */
 export const createActiveConversation = async (
   conversationId: string,
   therapistId: string,
@@ -190,6 +255,11 @@ export const createActiveConversation = async (
   return data[0] as ActiveConversation;
 };
 
+/**
+ * Removes an active conversation record from the database based on the provided conversation ID.
+ * @param conversationId - The ID of the conversation to remove.
+ * @returns True if the removal was successful, false otherwise.
+ */
 export const deleteActiveConversation = async (
   conversationId: string
 ): Promise<boolean> => {
@@ -203,6 +273,11 @@ export const deleteActiveConversation = async (
   return true;
 };
 
+/**
+ * Retrieves an active conversation record from the database based on the provided conversation ID.
+ * @param conversationId - The ID of the conversation to retrieve.
+ * @returns The ActiveConversation object, or null if not found or an error occurred.
+ */
 export const getActiveConversationById = async (
   conversationId: string
 ): Promise<ActiveConversation | null> => {
@@ -217,6 +292,10 @@ export const getActiveConversationById = async (
   return data as ActiveConversation;
 };
 
+/**
+ * Retrieves the total count of active conversations from the database.
+ * @returns The total count of active conversations.
+ */
 export const getTotalActiveConversations = async (): Promise<number> => {
   const { data, error } = await supabase
     .from("active_conversations")

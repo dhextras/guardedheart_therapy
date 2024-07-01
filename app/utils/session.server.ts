@@ -15,7 +15,7 @@ if (!sessionSecret) {
 
 const storage = createCookieSessionStorage({
   cookie: {
-    name: "RJ_session",
+    name: "anonymous_therapy_session",
     secure: process.env.NODE_ENV === "production",
     secrets: [sessionSecret],
     sameSite: "lax",
@@ -27,6 +27,12 @@ const storage = createCookieSessionStorage({
 
 export const { getSession, commitSession, destroySession } = storage;
 
+/**
+ * Checks if the current session has a therapist object.
+ * If not, redirects to the root path.
+ * @param request - The current request object.
+ * @returns The therapist object from the session.
+ */
 export async function requireTherapistSession(request: Request) {
   const session = await getSession(request.headers.get("Cookie"));
   const therapist = session.get("therapist");
@@ -38,6 +44,12 @@ export async function requireTherapistSession(request: Request) {
   return therapist as Therapist;
 }
 
+/**
+ * Checks if the current session has a therapist object.
+ * If so, redirects to the dashboard path.
+ * @param request - The current request object.
+ * @returns null if no therapist is in the session.
+ */
 export async function preventUserAccessForTherapists(request: Request) {
   const session = await getSession(request.headers.get("Cookie"));
   const therapist = session.get("therapist");
@@ -49,6 +61,14 @@ export async function preventUserAccessForTherapists(request: Request) {
   return null;
 }
 
+/**
+ * Saves the therapist object to the current session.
+ * Creates an online therapist record and updates the last login time.
+ * Redirects to the dashboard path with the updated session cookie.
+ * @param therapist - The therapist object to save.
+ * @param request - The current request object.
+ * @returns A redirect response with the updated session cookie.
+ */
 export async function saveTherapistToSession(
   therapist: Therapist,
   request: Request
@@ -65,6 +85,12 @@ export async function saveTherapistToSession(
   });
 }
 
+/**
+ * Logs out the current therapist from the session.
+ * Deletes the online therapist record and redirects to the root path.
+ * @param request - The current request object.
+ * @returns A redirect response with the destroyed session cookie.
+ */
 export async function logout(request: Request) {
   const session = await getSession(request.headers.get("Cookie"));
   const therapist = session.get("therapist");

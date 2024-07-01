@@ -7,14 +7,14 @@ import {
   useNavigation,
 } from "@remix-run/react";
 
+import { createPendingUser } from "~/db/utils";
+import { handleError } from "~/utils/notifications";
 import { generateMeta } from "~/utils/generateMeta";
+import { preventUserAccessForTherapists } from "~/utils/session.server";
 import {
   generateRandomName,
   getPredefinedText,
 } from "~/utils/userDetailsHelper";
-import { handleError } from "~/utils/notifications";
-import { createPendingUser } from "~/db/utils";
-import { preventUserAccessForTherapists } from "~/utils/session.server";
 
 import type {
   MetaFunction,
@@ -25,11 +25,21 @@ import type { PendingUser } from "~/types/db.types";
 
 export const meta: MetaFunction = generateMeta("Home");
 
+/**
+ * Prevents therapists from accessing the page.
+ * @param {LoaderFunctionArgs} args - Remix loader function arguments.
+ * @returns {Promise<null>} - Always returns null.
+ */
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   await preventUserAccessForTherapists(request);
   return null;
 };
 
+/**
+ * Creates a new pending user and redirects to the user chat page.
+ * @param {ActionFunctionArgs} args - Remix action function arguments.
+ * @returns {Promise<Response>} - Redirect response or JSON response with pending user data.
+ */
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   let userName = formData.get("userName")?.toString() || "";

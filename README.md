@@ -1,10 +1,6 @@
 # GuardedHeart Therapy
 
-GuardedHeart Therapy is a web application that facilitates real-time communication between users seeking therapy or counseling (anonymously) and available verified therapists.
-
-## Installation
-
-1. Clone the repository:
+GuardedHeart Therapy is a web application that facilitates real-time communication between users seeking therapy or counseling [anonymously) and available)# Installation
 
 ```bash
 git clone https://github.com/dhextras/anonymous_therapy.git
@@ -146,3 +142,11 @@ This table stores information about therapists who are currently online and avai
 - **Supabase `anon` key**: This is the anonymous key provided by Supabase, which allows your application to make authenticated requests to the Supabase API without requiring user authentication.
 
 Make sure to keep your Supabase credentials (URL and `anon` key) secure and never expose them in client-side code or commit them to version control.
+
+---
+
+# FOR THE DEVS!
+
+Following these coding guidelines will help keep our codebase clean, consistent, and easier to maintain. Trust me, your future self (and your fellow devs) will thank you!
+
+[Check them out here](https://gist.github.com/dhextras/77cffdb7eaaa574952828067c79de1a2):

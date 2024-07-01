@@ -1,7 +1,13 @@
 import React, { useRef, useEffect } from "react";
+
 import type { ChatInterfaceProps } from "~/types/socket.types";
 
-export default function ChatInterface({
+/**
+ * ChatInterface component
+ * @param {ChatInterfaceProps} props - Component props
+ * @returns {JSX.Element} - Rendered component
+ */
+export function ChatInterface({
   messages,
   inputMessage,
   onLeave,
@@ -33,12 +39,12 @@ export default function ChatInterface({
               src="/user-icon.png"
               className="w-full h-full object-cover rounded-full"
             />
-          </div>{" "}
+          </div>
           <div>
             <h2 className="text-md font-semibold">{otherPersonName}</h2>
             <p className="text-[10px] text-gray-400">
               {isOnline ? "Online" : "Offline"}
-            </p>{" "}
+            </p>
           </div>
         </div>
         <button
@@ -55,7 +61,8 @@ export default function ChatInterface({
           End
         </button>
       </div>
-      <div className="flex-grow overflow-y-auto  p-4 space-y-4 bg-chat">
+
+      <div className="flex-grow overflow-y-auto p-4 space-y-4 bg-chat">
         {messages.map((msg, index) => (
           <div
             key={index}
@@ -74,6 +81,7 @@ export default function ChatInterface({
         ))}
         <div ref={messagesEndRef} />
       </div>
+
       <div className="flex items-center border-t border-custom p-2 rounded-b-lg">
         <input
           type="text"

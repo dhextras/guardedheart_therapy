@@ -17,6 +17,11 @@ import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 
 export const meta: MetaFunction = generateMeta("Dashboard");
 
+/**
+ * Loader function for the dashboard route.
+ * Requires a therapist session and fetches all pending users from the database.
+ * Returns an object containing the pending users and a flag indicating if a user was not found.
+ */
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   await requireTherapistSession(request);
   const pendingUsers = await getAllPendingUsers();

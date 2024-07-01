@@ -7,15 +7,21 @@ import {
   useActionData,
   useNavigation,
 } from "@remix-run/react";
-import { LoaderFunctionArgs, ActionFunctionArgs, json } from "@remix-run/node";
+import { json } from "@remix-run/node";
 
-import { handleError } from "~/utils/notifications";
 import { getTherapistByCode } from "~/db/utils";
+import { handleError } from "~/utils/notifications";
 import { getSession, saveTherapistToSession } from "~/utils/session.server";
 
 import type { TherapistData } from "~/types/db.types";
 import type { TherapistErrorActionData } from "~/types/notification.types";
+import type { LoaderFunctionArgs, ActionFunctionArgs } from "@remix-run/node";
 
+/**
+ * Loader function to retrieve therapist data from session or fetch updated data from the database.
+ * @param {LoaderFunctionArgs} args - Remix loader function arguments
+ * @returns {Promise<Response>} JSON response with therapist data or an empty object
+ */
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const session = await getSession(request.headers.get("Cookie"));
   const therapist = session.get("therapist");
@@ -29,6 +35,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   return json({});
 };
 
+/**
+ * Action function to handle therapist login.
+ * @param {ActionFunctionArgs} args - Remix action function arguments
+ * @returns {Promise<Response>} JSON response with error or success data
+ */
 export const action = async ({ request }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const code = formData.get("code");

@@ -1,5 +1,9 @@
 import React from "react";
 
+/**
+ * LogoIcon component
+ * Renders an SVG logo icon
+ */
 const LogoIcon: React.FC = () => {
   return (
     <svg

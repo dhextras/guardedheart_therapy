@@ -1,15 +1,10 @@
 import invariant from "tiny-invariant";
 import { useState, useEffect } from "react";
 import { redirect, json } from "@remix-run/node";
-import {
-  useFetcher,
-  useLoaderData,
-  useNavigate,
-  useNavigation,
-} from "@remix-run/react";
+import { useFetcher, useLoaderData, useNavigate } from "@remix-run/react";
 
 import { generateMeta } from "~/utils/generateMeta";
-import ChatInterface from "~/components/ChatInterface";
+import { ChatInterface } from "~/components/ChatInterface";
 import { requireTherapistSession } from "~/utils/session.server";
 import { handleError, showToast } from "~/utils/notifications";
 import {
@@ -32,6 +27,16 @@ import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 
 export const meta: MetaFunction = generateMeta("Chat");
 
+/**
+ * Loader function for the TherapistChatPage
+ * @param {LoaderFunctionArgs} args - The loader function arguments
+ * @returns {Promise<Response>} - The response object containing the user and therapist data
+ * @description
+ * This loader function retrieves the therapist session and the pending user data based on the provided id.
+ * If the user is found, it creates an active conversation, updates the total conversations for the therapist,
+ * and returns the user and therapist data.
+ * If the user is not found, it redirects to the /dashboard route with an error query parameter.
+ */
 export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   invariant(params.id, "id must be provided");
 
@@ -53,6 +58,15 @@ export const loader = async ({ params, request }: LoaderFunctionArgs) => {
   return json({ user, therapist });
 };
 
+/**
+ * Action function for the TherapistChatPage
+ * @param {LoaderFunctionArgs} args - The action function arguments
+ * @returns {Promise<Response>} - The response object indicating success or failure
+ * @description
+ * This action function handles the "leave_chat" action.
+ * If the "leave_chat" action is received, it deletes the active conversation, removes the pending user,
+ * and returns a success response.
+ */
 export const action = async ({ params, request }: LoaderFunctionArgs) => {
   invariant(params.id, "id must be provided");
 

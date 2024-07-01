@@ -9,6 +9,7 @@
   --color-border: #2c2c2c;
 }
 
+/* Body and background styles */
 body {
   background-color: var(--color-background);
   color: var(--color-text-primary);
@@ -21,6 +22,8 @@ body {
   background-attachment: fixed;
   width: 100%;
 }
+
+/* Base color styles */
 .bg-base {
   background-color: var(--color-primary);
 }
@@ -45,12 +48,13 @@ body {
   border-color: var(--color-border);
 }
 
+/* Layout styles */
 .max-h-secondary-div {
   max-height: calc(90vh - 100px);
   min-height: calc(90vh - 100px);
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar styles */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -68,7 +72,7 @@ body {
   background: var(--color-primary);
 }
 
-/* Utility classes for chat interface */
+/* Chat interface styles */
 .chat-bubbles {
   max-width: 70%;
   word-wrap: break-word;

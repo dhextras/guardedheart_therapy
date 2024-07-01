@@ -12,6 +12,11 @@ import Header from "~/components/Header";
 import "~/styles/root.css";
 import "~/styles/tailwind.css";
 
+/**
+ * Layout component that renders the main structure of the application.
+ * @param {React.ReactNode} children - The content to be rendered within the layout.
+ * @returns {JSX.Element} The rendered layout component.
+ */
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="h-full">
@@ -36,6 +41,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+/**
+ * Root component that renders the Outlet from Remix.
+ * @returns {JSX.Element} The rendered root component.
+ */
 export default function App() {
   return <Outlet />;
 }
