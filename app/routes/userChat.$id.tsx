@@ -158,7 +158,7 @@ export default function UserChatPage() {
     setInputMessage(e.target.value);
   };
 
-  const handleChatPageLeave = () => {
+  const handleLeave = () => {
     sendMessageToChat(user_id, {
       name: "CONNECTION",
       message: "USER_LEAVE_CHAT",
@@ -180,7 +180,7 @@ export default function UserChatPage() {
           <ChatInterface
             messages={messages}
             inputMessage={inputMessage}
-            onLeave={handleChatPageLeave}
+            onLeave={handleLeave}
             onInputChange={handleInputChange}
             onSendMessage={handleSendMessage}
             otherPersonName={therapist_name}
@@ -189,19 +189,19 @@ export default function UserChatPage() {
         </div>
       ) : (
         <div className="max-w-md mx-auto flex flex-col max-h-secondary-div py-6">
-          <div className="text-center mb-8">
+          <div className="text-center mb-8 mx-4">
             <h1 className="text-4xl font-bold mb-2">
               Hello there {user_name}!
             </h1>
           </div>
 
-          <div className="bg-gray-100 rounded-md p-4 mb-4 w-full my-auto mb-auto">
+          <div className="bg-gray-100 rounded-md p-4 mb-4 my-auto mb-auto mx-4">
             <p className="text-gray-600 text-center justify-center">
               Online Therapists: {online_therapists} | Active Conversations:
               {active_conversations}
             </p>
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col mx-4">
             <div className="flex justify-center items-center my-2">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2"></div>
             </div>

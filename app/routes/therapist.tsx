@@ -68,12 +68,12 @@ export default function TherapistLogin() {
   if (data && data?.therapist) {
     return (
       <div className="max-w-md mx-auto flex flex-col max-h-secondary-div py-6">
-        <div className="text-center">
+        <div className="text-center mx-4">
           <h1 className="text-3xl font-bold">
             Welcome back, {data.therapist.name}
           </h1>
         </div>
-        <div className="border rounded-2xl p-4 text-center my-auto">
+        <div className="border rounded-2xl p-4 text-center my-auto mx-4">
           <p className="text-secondary">
             Your total conversations: {data.therapist.total_conversations}
           </p>
@@ -82,7 +82,7 @@ export default function TherapistLogin() {
             {new Date(data.therapist.last_login).toLocaleString()}{" "}
           </p>
         </div>
-        <div className="flex justify-center space-x-4">
+        <div className="flex justify-center space-x-4 mx-4">
           <Form action="/logout" method="post">
             <button
               type="submit"
@@ -103,16 +103,16 @@ export default function TherapistLogin() {
 
   return (
     <div className="max-w-md mx-auto flex flex-col max-h-secondary-div py-6">
-      <div className="text-center mb-8">
+      <div className="text-center mb-8 mx-4">
         <h1 className="text-3xl font-bold">Therapist Login</h1>
       </div>
-      <div className="border rounded-2xl p-4 text-center my-auto">
+      <div className="border rounded-2xl p-4 text-center my-auto mx-4">
         <p className="mt-2">
           Registration is not available through the web app. Please contact the
           admin if you are a verified therapist or want to become a therapist.
         </p>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col mx-4">
         <Form method="post" className="flex flex-col gap-2 space-y-4 mb-2">
           <div>
             <label htmlFor="code" className="font-semibold">

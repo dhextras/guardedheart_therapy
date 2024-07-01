@@ -65,7 +65,7 @@ export default function Index() {
 
   return (
     <div className="max-w-md mx-auto flex flex-col justify-between max-h-secondary-div py-6">
-      <div className="text-center mb-8">
+      <div className="text-center mb-8 mx-4">
         <h1 className="text-4xl font-bold mb-2">
           Welcome to GuardedHeart Therapy!
         </h1>
@@ -74,7 +74,7 @@ export default function Index() {
         </p>
       </div>
 
-      <div className="flex flex-col space-y-4">
+      <div className="flex flex-col space-y-4 mx-4">
         <Form method="post" className="flex flex-col space-y-4 mb-2">
           <div>
             <input
