@@ -1,35 +1,39 @@
 # GuardedHeart Therapy
 
-GuardedHeart Therapy is a web application that facilitates real-time communication between users seeking therapy or counseling [anonymously) and available)# Installation
+GuardedHeart Therapy is a web application that facilitates real-time communication between users seeking therapy or counseling anonymously and available therapists.
 
-```bash
-git clone https://github.com/dhextras/anonymous_therapy.git
-```
+## Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/dhextras/anonymous_therapy.git
+   ```
 
 2. Install dependencies:
 
-```bash
-cd anonymous_therapy
-npm install
-```
+   ```bash
+   cd anonymous_therapy
+   npm install
+   ```
 
 3. Set up Supabase:
 
    - Create a new Supabase project at [https://supabase.com](https://supabase.com).
    - After creating the project, Supabase will provide you with the API URL and the `anon` key.
-   - Run the below command to get the session secret
+   - Run the below command to generate a session secret:
 
-   ```bash
-   node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-   ```
+     ```bash
+     node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+     ```
 
    - Copy the `.env.example` file to a new file called `.env`:
 
-   ```bash
-   cp .env.example .env
-   ```
+     ```bash
+     cp .env.example .env
+     ```
 
-   - Open the `.env` file and replace the placeholders with your actual Supabase API URL and `anon` key and session secret:
+   - Open the `.env` file and replace the placeholders with your actual Supabase API URL, `anon` key, and session secret:
 
      ```
      SUPABASE_URL=YOUR_SUPABASE_URL
@@ -39,54 +43,96 @@ npm install
 
 4. Create the necessary database tables by running the following SQL queries in the Supabase SQL Editor:
 
-```sql
--- Create the users table
-CREATE TABLE users (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4()
-);
+   ```sql
+   -- Create the users table
+   CREATE TABLE users (
+     id UUID PRIMARY KEY DEFAULT uuid_generate_v4()
+   );
 
--- Create the therapists table
-CREATE TABLE therapists (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  code TEXT UNIQUE NOT NULL,
-  name TEXT,
-  total_conversations INTEGER DEFAULT 0
-  last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+   -- Create the therapists table
+   CREATE TABLE therapists (
+     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+     code TEXT UNIQUE NOT NULL,
+     name TEXT,
+     total_conversations INTEGER DEFAULT 0,
+     last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+   );
 
--- Create the active_conversations table
-CREATE TABLE active_conversations (
-  id UUID NOT NULL REFERENCES users(id),
-  therapist_id UUID NOT NULL REFERENCES therapists(id),
-  user_name TEXT,
-  therapiast_name TEXT,
-  userMessage TEXT,
-  started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+   -- Create the active_conversations table
+   CREATE TABLE active_conversations (
+     id UUID NOT NULL REFERENCES users(id),
+     therapist_id UUID NOT NULL REFERENCES therapists(id),
+     user_name TEXT,
+     therapist_name TEXT,
+     user_message TEXT,
+     started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+   );
 
--- Create the pending_users table
-CREATE TABLE pending_users (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID NOT NULL REFERENCES users(id),
-  name TEXT,
-  initial_message TEXT
-);
+   -- Create the pending_users table
+   CREATE TABLE pending_users (
+     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+     user_id UUID NOT NULL REFERENCES users(id),
+     name TEXT,
+     initial_message TEXT
+   );
 
--- Create the online_therapists table
-CREATE TABLE online_therapists (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  therapist_id UUID NOT NULL REFERENCES therapists(id),
-  online_since TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
+   -- Create the online_therapists table
+   CREATE TABLE online_therapists (
+     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+     therapist_id UUID NOT NULL REFERENCES therapists(id),
+     online_since TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+   );
+   ```
 
 5. Start the development server:
 
-```bash
-npm run dev
-```
+   ```bash
+   npm run dev
+   ```
 
-The application will be running at `http://localhost:3000`.
+   The application will be running at `http://localhost:3000`.
+
+## Deployment to VPS
+
+To deploy GuardedHeart Therapy to a VPS and manage it using PM2 for process management and Caddy for SSL and reverse proxy:
+
+1. Install PM2 globally (if not already installed):
+
+   ```bash
+   npm install pm2 -g
+   ```
+
+2. Build and start the server with PM2:
+
+   ```bash
+   pm2 start npm --name "guardedheart_therapy" -- start --watch
+   ```
+
+   This command will start the application using PM2, which will manage the Node.js process, restart it on failures, and allow easy monitoring.
+
+3. Set up Caddy for SSL and reverse proxy:
+
+   - Install Caddy on your VPS. Visit [Caddy's official website](https://caddyserver.com/) for installation instructions.
+
+   - Configure Caddy to serve your application and manage SSL certificates for HTTPS. Here's a basic Caddyfile example:
+
+     ```
+     yourdomain.com {
+       reverse_proxy localhost:3000
+       tls your@email.com
+     }
+     ```
+
+     Replace `yourdomain.com` with your actual domain and `localhost:3000` with the address where your Node.js application is running.
+
+4. Configure DNS forwarding:
+
+   Configure DNS forwarding on your hosting provider to link your domain with your VPS's IP address.
+
+5. Access your application:
+
+   Once DNS propagation is complete, you can access GuardedHeart Therapy at your configured domain over HTTPS.
+  
 
 ## Database structure
 
