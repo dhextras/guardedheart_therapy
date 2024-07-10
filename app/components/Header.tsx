@@ -1,7 +1,5 @@
 import { Link } from "@remix-run/react";
 
-import LogoSvg from "~/components/Logo";
-
 /**
  * Header component
  * Renders the header section with a logo and a link to the therapist page
@@ -11,7 +9,7 @@ export default function Header() {
     <header className="bg-surface py-4 px-6 flex justify-between items-center border-b border-custom">
       <div>
         <Link to="/">
-          <LogoSvg />
+          <img src="/logo.png" alt="GUARDEDHEART" width="120px" />
         </Link>
       </div>
 
